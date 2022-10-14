@@ -24,7 +24,9 @@ jobs:
 
     - name: Update Lambda function code
       run: |
-        aws lambda update-function-code --function-name test --zip-file fileb://lambda_function.zip --publish
+        JSON_RETURN=$(aws lambda update-function-code --function-name test --zip-file fileb://lambda_function.zip --publish)
+        FUNCTION_VERSION=fromJson(JSON_RETURN).Version
+        echo FUNCTION_VERSION
       # echo "FUNCTION_VERSION=$FUNCTION_VERSION" >> $GITHUB_ENV
       # FUNCTION_VERSION = a
 
