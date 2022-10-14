@@ -21,7 +21,6 @@ jobs:
     - name: Zip python files
       run: |
         zip -r lambda_function.zip lambda_function
-
     - name: Update Lambda function code
       run: |
         JSON_RETURN=$(aws lambda update-function-code --function-name test --zip-file fileb://lambda_function.zip --publish)
