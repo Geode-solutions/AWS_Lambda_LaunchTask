@@ -31,4 +31,4 @@ jobs:
 
     - name: Update Lambda function alias
       run: |
-        aws lambda update-alias --function-name test --name ${{ steps.meta.outputs.tags }} --function-version 5
+        aws lambda update-alias --function-name test --name ${GITHUB_REF##*/} --function-version 5
