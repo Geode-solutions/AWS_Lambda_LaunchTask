@@ -21,7 +21,6 @@ jobs:
     - name: Zip python files
       run: |
         zip -r lambda_function.zip lambda_function
-      # Compress-Archive -Path ./lambda_function -DestinationPath lambda_function.zip -Force
 
     - name: Update Lambda function code
       run: |
