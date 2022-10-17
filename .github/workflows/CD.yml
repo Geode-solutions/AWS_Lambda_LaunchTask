@@ -21,5 +21,6 @@ jobs:
         zip -r lambda_function.zip lambda_function
         JSON_RETURN=$(aws lambda update-function-code --function-name test --zip-file fileb://lambda_function.zip --publish)
         FUNCTION_VERSION=`echo "$JSON_RETURN" | jq '.Version'`
+        FUNCTION_VERSION=`echo "${FUNCTION_VERSION:1:${#FUNCTION_VERSION}-2}"`
         echo $FUNCTION_VERSION
         aws lambda update-alias --function-name test --name ${GITHUB_REF##*/} --function-version $FUNCTION_VERSION
