@@ -20,6 +20,7 @@ jobs:
 
     - name: Zip python files
       run: |
+        rm -f lambda_function.zip
         zip -r lambda_function.zip lambda_function
     - name: Update Lambda function code
       run: |
