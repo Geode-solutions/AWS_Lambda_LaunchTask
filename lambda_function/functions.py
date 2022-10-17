@@ -17,30 +17,30 @@ def create_fargate_task(ecs_client: botocore.client,
     fargate = ecs_client.run_task(
         cluster = FARGATE_CLUSTER,
         count=1,
-        launchType = "FARGATE",
+        launchType = 'FARGATE',
         taskDefinition = FARGATE_TASK_DEF_NAME,
-        platformVersion = "LATEST",
+        platformVersion = 'LATEST',
         networkConfiguration = {
-            "awsvpcConfiguration": {
-                "subnets": [
+            'awsvpcConfiguration': {
+                'subnets': [
                     FARGATE_SUBNET_ID,
                 ],
-                "securityGroups": [SECURITY_GROUP],
-                "assignPublicIp": "ENABLED"
+                'securityGroups': [SECURITY_GROUP],
+                'assignPublicIp': 'ENABLED'
             }
         },
         overrides={
-            "containerOverrides": [
+            'containerOverrides': [
                 {
-                    "name": "ToolsContainer",
-                    "environment": [
+                    'name': 'ToolsContainer',
+                    'environment': [
                         {
-                            "name": "ID",
-                            "value": ID
+                            'name': 'ID',
+                            'value': ID
                         },
                         {
-                            "name": "FLASK_ENV",
-                            "value": "production",
+                            'name': 'FLASK_ENV',
+                            'value': 'production',
                         },
 
                     ],
@@ -50,12 +50,12 @@ def create_fargate_task(ecs_client: botocore.client,
         },
     )
     
-    failures = fargate["failures"]
+    failures = fargate['failures']
     if failures:
-        print("Task creation failed, restarting")
+        print('Task creation failed, restarting')
         taskArn = create_fargate_task(ecs_client, FARGATE_CLUSTER, FARGATE_TASK_DEF_NAME, FARGATE_SUBNET_ID, SECURITY_GROUP, ID)
     else:
-        taskArn = fargate["tasks"][0]["taskArn"]
+        taskArn = fargate['tasks'][0]['taskArn']
         
     return taskArn
     
@@ -65,25 +65,25 @@ def create_target_group(elbv2_client: botocore.client,
     
     targetGroup = elbv2_client.create_target_group(
         Name=ID,
-        Protocol="HTTPS",
-        ProtocolVersion="HTTP1",
+        Protocol='HTTPS',
+        ProtocolVersion='HTTP1',
         Port=443,
         VpcId=VPC_ID,
-        HealthCheckProtocol="HTTPS",
-        HealthCheckPort="traffic-port",
+        HealthCheckProtocol='HTTPS',
+        HealthCheckPort='traffic-port',
         HealthCheckEnabled=True,
-        HealthCheckPath=f"/{ID}/healthcheck",
+        HealthCheckPath=f'/{ID}/healthcheck',
         HealthCheckIntervalSeconds=5,
         HealthCheckTimeoutSeconds=4,
         HealthyThresholdCount=2,
         UnhealthyThresholdCount=5,
         Matcher={
-            "HttpCode": "200",
+            'HttpCode': '200',
         },
-        TargetType="ip"
+        TargetType='ip'
     )
     
-    targetGroupArn = targetGroup["TargetGroups"][0]["TargetGroupArn"]
+    targetGroupArn = targetGroup['TargetGroups'][0]['TargetGroupArn']
     return targetGroupArn
 
 def create_listener_rule(elbv2_client: botocore.client,
@@ -92,30 +92,30 @@ def create_listener_rule(elbv2_client: botocore.client,
                         targetGroupArn: str,
                         RulesCountAdd: int = 0):
     ListenerRules = elbv2_client.describe_rules(ListenerArn = LISTENER_ARN)
-    RulesCount = len(ListenerRules["Rules"]) + 1 + RulesCountAdd
+    RulesCount = len(ListenerRules['Rules']) + 1 + RulesCountAdd
     
     try:
         listenerRule = elbv2_client.create_rule(
             ListenerArn=LISTENER_ARN,
             Conditions=[
                 {   
-                    "Field": "path-pattern",
-                    "Values": [
-                        "/" + ID + "/*"
+                    'Field': 'path-pattern',
+                    'Values': [
+                        '/' + ID + '/*'
                     ],
                 },
             ],
             Priority=RulesCount,
             Actions=[
                 {
-                    "Type": "forward",
-                    "TargetGroupArn": targetGroupArn,
-                    "Order": 1,
-                    "ForwardConfig": {
-                        "TargetGroups": [
+                    'Type': 'forward',
+                    'TargetGroupArn': targetGroupArn,
+                    'Order': 1,
+                    'ForwardConfig': {
+                        'TargetGroups': [
                             {
-                                "TargetGroupArn": targetGroupArn,
-                                "Weight": 1
+                                'TargetGroupArn': targetGroupArn,
+                                'Weight': 1
                             },
                         ],
                     }
@@ -123,13 +123,13 @@ def create_listener_rule(elbv2_client: botocore.client,
             ],
         )
         
-        #print("listenerRule :", listenerRule)
+        #print('listenerRule :', listenerRule)
     
     except elbv2_client.exceptions.PriorityInUseException:
-        print("Retrying create_rule :", RulesCountAdd)
-        return create_listener_rule(elbv2_client, LISTENER_ARN, ID, targetGroupArn, RulesCountAdd + 1)
+        print('Retrying create_rule :', RulesCountAdd)
+        return create_listener_rule(elbv2_client, ID, targetGroupArn, RulesCountAdd + 1)
     
-    RuleArn = listenerRule["Rules"][0]["RuleArn"]
+    RuleArn = listenerRule['Rules'][0]['RuleArn']
     return RuleArn
     
     
@@ -141,8 +141,8 @@ def create_target(elbv2_client: botocore.client,
         TargetGroupArn=targetGroupArn,
         Targets=[
             {
-                "Id": fargatePrivateIP,
-                "Port": FARGATE_PORT
+                'Id': fargatePrivateIP,
+                'Port': FARGATE_PORT
             },
         ]
     )
@@ -158,8 +158,8 @@ def addTag(ecs_client: botocore.client,
         resourceArn=taskArn,
         tags=[
             {
-                "key": key,
-                "value": value
+                'key': key,
+                'value': value
             },
         ]
     )
@@ -175,15 +175,15 @@ def waitTaskAttached(ecs_client: botocore.client,
             tasks = [taskArn]
         )
         
-        taskStatus = taskDescription["tasks"][0]["attachments"][0]["status"]
+        taskStatus = taskDescription['tasks'][0]['attachments'][0]['status']
         
-        if taskStatus == "ATTACHED":
-            print("Task attached !")
-            FargatePrivateIP = taskDescription["tasks"][0]["attachments"][0]["details"][4]["value"]
+        if taskStatus == 'ATTACHED':
+            print('Task attached !')
+            FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
             return FargatePrivateIP
         else:
             time.sleep(SECONDS_BETWEEN_TRIES)
-    raise Exception("Task not attached")
+    raise Exception('Task not attached')
     
 def waitTargetHealthy(elbv2_client: botocore.client,
                         TargetGroupArn: str,
@@ -196,19 +196,19 @@ def waitTargetHealthy(elbv2_client: botocore.client,
             TargetGroupArn=TargetGroupArn,
             Targets=[
                 {
-                    "Id": FargatePrivateIP,
-                    "Port": FARGATE_PORT
+                    'Id': FargatePrivateIP,
+                    'Port': FARGATE_PORT
                 },
             ]
         )
-        targetHealthStatus = targetHealthDescription["TargetHealthDescriptions"][0]["TargetHealth"]["State"]
+        targetHealthStatus = targetHealthDescription['TargetHealthDescriptions'][0]['TargetHealth']['State']
         
-        if targetHealthStatus == "healthy":
-            print("Target healthy !")
+        if targetHealthStatus == 'healthy':
+            print('Target healthy !')
             return
         else:
             time.sleep(SECONDS_BETWEEN_TRIES)
-    raise Exception("Target not healthy")
+    raise Exception('Target not healthy')
 
 def modifyTargetGroup(elbv2_client: botocore.client,
                     TargetGroupArn: str):
@@ -229,14 +229,14 @@ def waitForTaskRunning(ecs_client: botocore.client,
     
     for tries in range(numberOfTries):
         taskDescription = ecs_client.describe_tasks(cluster=FARGATE_CLUSTER, tasks=[TaskArn])
-        taskStatus = taskDescription["tasks"][0]["lastStatus"]
+        taskStatus = taskDescription['tasks'][0]['lastStatus']
         
-        if taskStatus == "RUNNING":
-            print("Task running !")
+        if taskStatus == 'RUNNING':
+            print('Task running !')
             return
         else:
             time.sleep(SECONDS_BETWEEN_TRIES)
-    raise Exception("Task not running")
+    raise Exception('Task not running')
     
 def waitForTaskResponding(ID: str,
                         numberOfTries: int,
@@ -245,11 +245,32 @@ def waitForTaskResponding(ID: str,
         https = urllib3.PoolManager()
         r = https.request('POST', f'https://api.geode-solutions.com/{ID}/ping')
         if r.status != 200:
-            print("Task didn't respond")
+            print('Task didn''t respond')
             time.sleep(SECONDS_BETWEEN_TRIES)
         else:
-            print("response : ", r.data)
-            print("Task responded ! ")
+            print('response : ', r.data)
+            print('Task responded ! ')
             return
         
-    raise Exception("Task not responding")
+    raise Exception('Task not responding')
+
+def make_lambda_return(STATUS_CODE: int
+                    , STATUS_DESCRIPTION: str
+                    , ORIGIN: str
+                    , BODY: dict = None):
+    lamdba_return = {
+        'statusCode':STATUS_CODE,
+        'statusDescription':STATUS_DESCRIPTION,
+        'isBase64Encoded':False,
+        'headers': {
+            'Access-Control-Allow-Headers':'Content-Type',
+            'Access-Control-Allow-Origin':ORIGIN,
+            'Access-Control-Allow-Methods':'OPTIONS,POST,GET'
+        }
+    }
+    if BODY is not None:
+        lamdba_return.update({'body': ''})
+        for key, value in BODY:
+            lamdba_return['body'].update({key: value})
+    
+    return lamdba_return
