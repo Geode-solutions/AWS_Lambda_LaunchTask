@@ -16,9 +16,12 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-3
+    - name: Zip code
+      run: |
+        cd lambda_function
+        zip -r ../lambda_function.zip .
     - name: Update Lambda function code
       run: |
-        zip -r lambda_function.zip lambda_function/*
         JSON_RETURN=$(aws lambda update-function-code --function-name test --zip-file fileb://lambda_function.zip --publish)
         FUNCTION_VERSION=`echo "$JSON_RETURN" | jq '.Version'`
         FUNCTION_VERSION=`echo "${FUNCTION_VERSION:1:${#FUNCTION_VERSION}-2}"`
