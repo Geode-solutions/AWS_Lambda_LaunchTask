@@ -32,7 +32,7 @@ def lambda_handler(event, context):
     REQUEST_PATH = event['path']
     HTTP_METHOD = event['httpMethod']
 
-    functions.load_config(REQUEST_ORIGIN, REQUEST_PATH)
+    config.load_config(REQUEST_ORIGIN, REQUEST_PATH)
 
     try:
         if HTTP_METHOD == 'OPTIONS':
