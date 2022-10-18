@@ -267,7 +267,8 @@ def make_lambda_return(STATUS_CODE: int
             ('Access-Control-Allow-Headers', 'Content-Type')
             , ('Access-Control-Allow-Origin', ORIGIN)
             , ('Access-Control-Allow-Methods', 'OPTIONS,POST,GET')
-        ))
+            )
+        )
     )
 
     if BODY is not None:
