@@ -70,7 +70,7 @@ def load_config(
         elif REQUEST_ORIGIN == 'https://next.geode-solutions.com':
             CONFIG_TYPE = 'SHARETWIN_DEV_CONFIG'
         else:
-            raise functions.make_lambda_return(403, '403 Forbidden', '', {'error_message': 'Domain not allowed!'})
+            raise functions.make_lambda_return(403, '403 Forbidden', REQUEST_ORIGIN, {'error_message': 'Domain not allowed!'})
 
         CLUSTER_NAME = CONFIG['SHARETWIN_CONFIG'][CONFIG_TYPE]['CLUSTER_NAME']
         TASK_DEF_NAME = CONFIG['SHARETWIN_CONFIG'][CONFIG_TYPE]['TASK_DEF_NAME']
