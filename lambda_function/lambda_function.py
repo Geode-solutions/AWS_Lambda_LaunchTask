@@ -10,15 +10,15 @@ import time
 import functions # functions defined in functions.py
 import config
 
-global CLUSTER_NAME
-global HEALTHCHECK_PORT
-global LISTENER_ARN
-global ORIGINS
-global SECONDS_BETWEEN_TRIES
-global SECURITY_GROUP
-global SUBNET_ID
-global TASK_DEF_NAME
-global VPC_ID
+# global CLUSTER_NAME
+# global HEALTHCHECK_PORT
+# global LISTENER_ARN
+# global ORIGINS
+# global SECONDS_BETWEEN_TRIES
+# global SECURITY_GROUP
+# global SUBNET_ID
+# global TASK_DEF_NAME
+# global VPC_ID
 
 def lambda_handler(event, context):
     
