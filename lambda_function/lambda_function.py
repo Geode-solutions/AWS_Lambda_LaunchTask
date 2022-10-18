@@ -23,9 +23,9 @@ global VPC_ID
 def lambda_handler(event, context):
     
     print('event :', event)
-    
-    REQUEST_ORIGIN = event['requestContext']['origin']
-    REQUEST_PATH = event['requestContext']['path']
+
+    REQUEST_ORIGIN = event['origin']
+    REQUEST_PATH = event['path']
     HTTP_METHOD = event['httpMethod']
 
     functions.load_config(REQUEST_ORIGIN, REQUEST_PATH)
