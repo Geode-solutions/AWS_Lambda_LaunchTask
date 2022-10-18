@@ -24,7 +24,11 @@ def lambda_handler(event, context):
     
     print('event :', event)
 
-    REQUEST_ORIGIN = event['origin']
+    if 'origin' in event:
+        REQUEST_ORIGIN = event['origin']
+    else:
+        REQUEST_ORIGIN = ''
+    
     REQUEST_PATH = event['path']
     HTTP_METHOD = event['httpMethod']
 
