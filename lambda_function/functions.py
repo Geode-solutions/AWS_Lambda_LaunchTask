@@ -7,25 +7,22 @@ import urllib3
 import uuid
 import time
 
+
 def create_fargate_task(ecs_client: botocore.client,
-                        FARGATE_CLUSTER: str,
-                        FARGATE_TASK_DEF_NAME: str,
-                        FARGATE_SUBNET_ID: str,
-                        SECURITY_GROUP: str,
                         ID: str):
-    
+
     fargate = ecs_client.run_task(
-        cluster = FARGATE_CLUSTER,
+        cluster=CONFIG['CLUSTER_NAME'],
         count=1,
-        launchType = 'FARGATE',
-        taskDefinition = FARGATE_TASK_DEF_NAME,
-        platformVersion = 'LATEST',
-        networkConfiguration = {
+        launchType='FARGATE',
+        taskDefinition=CONFIG['TASK_DEF_NAME'],
+        platformVersion='LATEST',
+        networkConfiguration={
             'awsvpcConfiguration': {
                 'subnets': [
-                    FARGATE_SUBNET_ID,
+                    CONFIG['SUBNET_ID'],
                 ],
-                'securityGroups': [SECURITY_GROUP],
+                'securityGroups': [CONFIG['SECURITY_GROUP']],
                 'assignPublicIp': 'ENABLED'
             }
         },
@@ -46,29 +43,29 @@ def create_fargate_task(ecs_client: botocore.client,
                     ],
                 },
             ],
-
         },
     )
-    
+
     failures = fargate['failures']
     if failures:
         print('Task creation failed, restarting')
-        taskArn = create_fargate_task(ecs_client, FARGATE_CLUSTER, FARGATE_TASK_DEF_NAME, FARGATE_SUBNET_ID, SECURITY_GROUP, ID)
+        taskArn = create_fargate_task(
+            ecs_client, CONFIG['CLUSTER_NAME'], CONFIG['TASK_DEF_NAME'], CONFIG['SUBNET_ID'], CONFIG['SECURITY_GROUP'], ID)
     else:
         taskArn = fargate['tasks'][0]['taskArn']
-        
+
     return taskArn
-    
+
+
 def create_target_group(elbv2_client: botocore.client,
-                        ID: str,
-                        VPC_ID: str):
-    
+                        ID: str):
+
     targetGroup = elbv2_client.create_target_group(
         Name=ID,
         Protocol='HTTPS',
         ProtocolVersion='HTTP1',
         Port=443,
-        VpcId=VPC_ID,
+        VpcId=CONFIG['VPC_ID'],
         HealthCheckProtocol='HTTPS',
         HealthCheckPort='traffic-port',
         HealthCheckEnabled=True,
@@ -82,23 +79,24 @@ def create_target_group(elbv2_client: botocore.client,
         },
         TargetType='ip'
     )
-    
+
     targetGroupArn = targetGroup['TargetGroups'][0]['TargetGroupArn']
     return targetGroupArn
 
+
 def create_listener_rule(elbv2_client: botocore.client,
-                        LISTENER_ARN: str,
-                        ID: str,
-                        targetGroupArn: str,
-                        RulesCountAdd: int = 0):
-    ListenerRules = elbv2_client.describe_rules(ListenerArn = LISTENER_ARN)
+                         ID: str,
+                         targetGroupArn: str,
+                         RulesCountAdd: int = 0):
+    ListenerRules = elbv2_client.describe_rules(
+        ListenerArn=CONFIG['LISTENER_ARN'])
     RulesCount = len(ListenerRules['Rules']) + 1 + RulesCountAdd
-    
+
     try:
         listenerRule = elbv2_client.create_rule(
-            ListenerArn=LISTENER_ARN,
+            ListenerArn=CONFIG['LISTENER_ARN'],
             Conditions=[
-                {   
+                {
                     'Field': 'path-pattern',
                     'Values': [
                         '/' + ID + '/*'
@@ -122,38 +120,39 @@ def create_listener_rule(elbv2_client: botocore.client,
                 },
             ],
         )
-        
+
         #print('listenerRule :', listenerRule)
-    
+
     except elbv2_client.exceptions.PriorityInUseException:
         print('Retrying create_rule :', RulesCountAdd)
         return create_listener_rule(elbv2_client, ID, targetGroupArn, RulesCountAdd + 1)
-    
+
     RuleArn = listenerRule['Rules'][0]['RuleArn']
     return RuleArn
-    
-    
+
+
 def create_target(elbv2_client: botocore.client,
-                targetGroupArn: str,
-                fargatePrivateIP: str,
-                FARGATE_PORT: str):
+                  targetGroupArn: str,
+                  fargatePrivateIP: str,
+                  FARGATE_PORT: str):
     target = elbv2_client.register_targets(
         TargetGroupArn=targetGroupArn,
         Targets=[
             {
                 'Id': fargatePrivateIP,
-                'Port': FARGATE_PORT
+                'Port': CONFIG['HEALTHCHECK_PORT']
             },
         ]
     )
-    
-    #(target)
+
+    # (target)
     return target
-    
+
+
 def addTag(ecs_client: botocore.client,
-            taskArn: str,
-            key: str,
-            value: str):
+           taskArn: str,
+           key: str,
+           value: str):
     response = ecs_client.tag_resource(
         resourceArn=taskArn,
         tags=[
@@ -163,55 +162,54 @@ def addTag(ecs_client: botocore.client,
             },
         ]
     )
-    
+
+
 def waitTaskAttached(ecs_client: botocore.client,
-                    FARGATE_CLUSTER: str,
-                    taskArn: str,
-                    numberOfTries: int,
-                    SECONDS_BETWEEN_TRIES: float):
+                     taskArn: str,
+                     numberOfTries: int):
     for tries in range(numberOfTries):
         taskDescription = ecs_client.describe_tasks(
-            cluster = FARGATE_CLUSTER,
-            tasks = [taskArn]
+            cluster=CONFIG['CLUSTER_NAME'],
+            tasks=[taskArn]
         )
-        
+
         taskStatus = taskDescription['tasks'][0]['attachments'][0]['status']
-        
+
         if taskStatus == 'ATTACHED':
             print('Task attached !')
             FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
             return FargatePrivateIP
         else:
-            time.sleep(SECONDS_BETWEEN_TRIES)
+            time.sleep(CONFIG['SECONDS_BETWEEN_TRIES'])
     raise Exception('Task not attached')
-    
+
+
 def waitTargetHealthy(elbv2_client: botocore.client,
-                        TargetGroupArn: str,
-                        FargatePrivateIP: str,
-                        numberOfTries: int,
-                        FARGATE_PORT: int,
-                        SECONDS_BETWEEN_TRIES: float):
+                      TargetGroupArn: str,
+                      FargatePrivateIP: str,
+                      numberOfTries: int):
     for tries in range(numberOfTries):
         targetHealthDescription = elbv2_client.describe_target_health(
             TargetGroupArn=TargetGroupArn,
             Targets=[
                 {
                     'Id': FargatePrivateIP,
-                    'Port': FARGATE_PORT
+                    'Port': CONFIG['HEALTHCHECK_PORT']
                 },
             ]
         )
         targetHealthStatus = targetHealthDescription['TargetHealthDescriptions'][0]['TargetHealth']['State']
-        
+
         if targetHealthStatus == 'healthy':
             print('Target healthy !')
             return
         else:
-            time.sleep(SECONDS_BETWEEN_TRIES)
+            time.sleep(CONFIG['SECONDS_BETWEEN_TRIES'])
     raise Exception('Target not healthy')
 
+
 def modifyTargetGroup(elbv2_client: botocore.client,
-                    TargetGroupArn: str):
+                      TargetGroupArn: str):
     response = elbv2_client.modify_target_group(
         TargetGroupArn=TargetGroupArn,
         HealthCheckIntervalSeconds=5,
@@ -219,37 +217,37 @@ def modifyTargetGroup(elbv2_client: botocore.client,
         HealthyThresholdCount=2,
         UnhealthyThresholdCount=2
     )
-    #print(response)
+    # print(response)
+
 
 def waitForTaskRunning(ecs_client: botocore.client,
-                        FARGATE_CLUSTER: str,
-                        TaskArn: str,
-                        numberOfTries: int,
-                        SECONDS_BETWEEN_TRIES: float):
-    
+                       TaskArn: str,
+                       numberOfTries: int):
+
     for tries in range(numberOfTries):
-        taskDescription = ecs_client.describe_tasks(cluster=FARGATE_CLUSTER, tasks=[TaskArn])
+        taskDescription = ecs_client.describe_tasks(
+            cluster=CONFIG['CLUSTER_NAME'], tasks=[TaskArn])
         taskStatus = taskDescription['tasks'][0]['lastStatus']
-        
+
         if taskStatus == 'RUNNING':
             print('Task running !')
             return
         else:
-            time.sleep(SECONDS_BETWEEN_TRIES)
+            time.sleep(CONFIG['SECONDS_BETWEEN_TRIES'])
     raise Exception('Task not running')
-    
+
+
 def waitForTaskResponding(ID: str,
-                        numberOfTries: int,
-                        SECONDS_BETWEEN_TRIES: float):
+                          numberOfTries: int):
     for tries in range(numberOfTries):
         https = urllib3.PoolManager()
         r = https.request('POST', f'https://api.geode-solutions.com/{ID}/ping')
         if r.status != 200:
             print('Task didn''t respond')
-            time.sleep(SECONDS_BETWEEN_TRIES)
+            time.sleep(CONFIG['SECONDS_BETWEEN_TRIES'])
         else:
             print('response : ', r.data)
             print('Task responded ! ')
             return
-        
+
     raise Exception('Task not responding')
