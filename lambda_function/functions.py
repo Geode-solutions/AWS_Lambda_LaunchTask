@@ -10,8 +10,7 @@ import time
 import config
 
 
-def create_fargate_task(ecs_client: botocore.client,
-                        ID: str):
+def create_fargate_task(config: config, ecs_client: botocore.client, ID: str):
 
     fargate = ecs_client.run_task(
         cluster=config.CLUSTER_NAME,
@@ -58,7 +57,7 @@ def create_fargate_task(ecs_client: botocore.client,
     return taskArn
 
 
-def create_target_group(elbv2_client: botocore.client,
+def create_target_group(config: config, elbv2_client: botocore.client,
                         ID: str):
 
     targetGroup = elbv2_client.create_target_group(
@@ -130,7 +129,7 @@ def create_listener_rule(elbv2_client: botocore.client,
     return RuleArn
 
 
-def register_target(elbv2_client: botocore.client,
+def register_target(config: config, elbv2_client: botocore.client,
                     targetGroupArn: str,
                     fargatePrivateIP: str):
     target = elbv2_client.register_targets(
@@ -160,7 +159,8 @@ def addTag(ecs_client: botocore.client,
     )
 
 
-def waitTaskAttached(ecs_client: botocore.client,
+def waitTaskAttached(config: config,
+                     ecs_client: botocore.client,
                      taskArn: str,
                      numberOfTries: int):
     for tries in range(numberOfTries):
@@ -180,7 +180,8 @@ def waitTaskAttached(ecs_client: botocore.client,
     raise Exception('Task not attached')
 
 
-def waitTargetHealthy(elbv2_client: botocore.client,
+def waitTargetHealthy(config: config,
+                      elbv2_client: botocore.client,
                       TargetGroupArn: str,
                       FargatePrivateIP: str,
                       numberOfTries: int):
@@ -204,7 +205,8 @@ def waitTargetHealthy(elbv2_client: botocore.client,
     raise Exception('Target not healthy')
 
 
-def modifyTargetGroup(elbv2_client: botocore.client,
+def modifyTargetGroup(config: config,
+                      elbv2_client: botocore.client,
                       TargetGroupArn: str):
     response = elbv2_client.modify_target_group(
         TargetGroupArn=TargetGroupArn,
@@ -215,7 +217,7 @@ def modifyTargetGroup(elbv2_client: botocore.client,
     )
 
 
-def waitForTaskRunning(ecs_client: botocore.client,
+def waitForTaskRunning(config: config, ecs_client: botocore.client,
                        TaskArn: str,
                        numberOfTries: int):
 
@@ -232,7 +234,8 @@ def waitForTaskRunning(ecs_client: botocore.client,
     raise Exception('Task not running')
 
 
-def waitForTaskResponding(ID: str,
+def waitForTaskResponding(config: config,
+                          ID: str,
                           numberOfTries: int):
     for tries in range(numberOfTries):
         https = urllib3.PoolManager()

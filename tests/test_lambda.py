@@ -1,22 +1,23 @@
 from ..lambda_function import config_functions
+from ..lambda_function import config
 
 
 def test_load_config():
     ORIGIN_GEODE_SOLUTIONS = 'https://geode-solutions.com'
     PATH_TOOLS_CREATE_BACKEND = '/tools/createbackend'
-    config = config_functions.load_config(
-        ORIGIN_GEODE_SOLUTIONS, PATH_TOOLS_CREATE_BACKEND)
-    assert type(config) is dict
-    assert type(config['CLUSTER_NAME']) is str
-    assert type(config['HEALTHCHECK_PORT']) is int
-    assert type(config['HEALTHCHECK_ROUTE']) is str
-    assert type(config['LISTENER_ARN']) is str
-    assert type(config['ORIGINS']) is str
-    assert type(config['SECONDS_BETWEEN_TRIES']) is float
-    assert type(config['SECURITY_GROUP']) is str
-    assert type(config['SUBNET_ID']) is str
-    assert type(config['TASK_DEF_NAME']) is str
-    assert type(config['VPC_ID']) is str
+    CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS, PATH_TOOLS_CREATE_BACKEND)
+
+    assert type(CONFIG.ASSIGN_PUBLIC_IP) is str
+    assert type(CONFIG.CLUSTER_NAME) is str
+    assert type(CONFIG.HEALTHCHECK_PORT) is int
+    assert type(CONFIG.HEALTHCHECK_ROUTE) is str
+    assert type(CONFIG.LISTENER_ARN) is str
+    assert type(CONFIG.ORIGINS) is str
+    assert type(CONFIG.SECONDS_BETWEEN_TRIES) is float
+    assert type(CONFIG.SECURITY_GROUP) is str
+    assert type(CONFIG.SUBNET_ID) is str
+    assert type(CONFIG.TASK_DEF_NAME) is str
+    assert type(CONFIG.VPC_ID) is str
 
 
 def test_make_lambda_return():
