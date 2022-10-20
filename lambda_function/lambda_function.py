@@ -15,8 +15,8 @@ def lambda_handler(event, context):
 
     print('event :', event)
 
-    if 'origin' in event:
-        REQUEST_ORIGIN = event['origin']
+    if 'origin' in event['headers']:
+        REQUEST_ORIGIN = event['headers']['origin']
     else:
         REQUEST_ORIGIN = ''
 
