@@ -8,9 +8,7 @@ import uuid
 import time
 
 import functions
-import config_funxtions
-
-global CONFIG
+import config_functions
 
 
 def lambda_handler(event, context):
