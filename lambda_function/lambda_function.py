@@ -10,6 +10,8 @@ import time
 import functions
 import config_functions
 
+global CONFIG
+
 
 def lambda_handler(event, context):
 
