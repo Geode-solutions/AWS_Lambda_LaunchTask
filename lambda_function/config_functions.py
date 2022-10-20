@@ -1,6 +1,9 @@
 def load_config(
         REQUEST_ORIGIN: str, REQUEST_PATH: str):
 
+    print(f'{REQUEST_ORIGIN=}')
+    print(f'{REQUEST_PATH=}')
+
     CONFIG = {}
     CONFIG_DICT = {
         'TOOLS':
