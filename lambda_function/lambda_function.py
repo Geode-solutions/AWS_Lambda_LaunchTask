@@ -31,18 +31,18 @@ def lambda_handler(event, context):
         if HTTP_METHOD == 'OPTIONS':
             return functions.make_lambda_return(200, '200 OK', REQUEST_ORIGIN)
         else:
-            elbv2_client = boto3.client("elbv2")
-            ecs_client = boto3.client("ecs")
-            ID = str(uuid.uuid4()).replace("-", "")
-            print("ID : ", ID)
+            elbv2_client = boto3.client('elbv2')
+            ecs_client = boto3.client('ecs')
+            ID = str(uuid.uuid4()).replace('-', '')
+            print('ID : ', ID)
 
             TaskArn = functions.create_fargate_task(ecs_client, ID)
             TargetGroupArn = functions.create_target_group(elbv2_client, ID)
             functions.addTag(ecs_client, TaskArn,
-                             "TargetGroupArn", TargetGroupArn)
+                             'TargetGroupArn', TargetGroupArn)
             RuleArn = functions.create_listener_rule(
                 elbv2_client, ID, TargetGroupArn, 0)
-            functions.addTag(ecs_client, TaskArn, "RuleArn", RuleArn)
+            functions.addTag(ecs_client, TaskArn, 'RuleArn', RuleArn)
             FargatePrivateIP = functions.waitTaskAttached(
                 ecs_client, TaskArn, 100)
             functions.waitForTaskRunning(
@@ -54,8 +54,8 @@ def lambda_handler(event, context):
             functions.modifyTargetGroup(elbv2_client, TargetGroupArn)
             functions.waitForTaskResponding(ID, 100)
 
-            return functions.make_lambda_return(200, '200 OK', ORIGIN, {"ID": ID})
+            return functions.make_lambda_return(200, '200 OK', ORIGIN, {'ID': ID})
 
     except Exception as e:
         print(e)
-        return functions.make_lambda_return(500, '500 NOT OK', ORIGIN, {"error_message": str(e)})
+        return functions.make_lambda_return(500, '500 NOT OK', ORIGIN, {'error_message': str(e)})

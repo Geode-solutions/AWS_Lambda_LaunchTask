@@ -23,7 +23,7 @@ def create_fargate_task(ecs_client: botocore.client,
                     CONFIG['SUBNET_ID'],
                 ],
                 'securityGroups': [CONFIG['SECURITY_GROUP']],
-                'assignPublicIp': 'ENABLED'
+                'assignPublicIp': CONFIG['ASSIGN_PUBLIC_IP']
             }
         },
         overrides={
@@ -60,6 +60,8 @@ def create_fargate_task(ecs_client: botocore.client,
 def create_target_group(elbv2_client: botocore.client,
                         ID: str):
 
+    HEALTHCHECK_ROUTE = CONFIG['HEALTHCHECK_ROUTE']
+
     targetGroup = elbv2_client.create_target_group(
         Name=ID,
         Protocol='HTTPS',
@@ -69,7 +71,7 @@ def create_target_group(elbv2_client: botocore.client,
         HealthCheckProtocol='HTTPS',
         HealthCheckPort='traffic-port',
         HealthCheckEnabled=True,
-        HealthCheckPath=f'/{ID}/healthcheck',
+        HealthCheckPath=f'/{ID}{HEALTHCHECK_ROUTE}',
         HealthCheckIntervalSeconds=5,
         HealthCheckTimeoutSeconds=4,
         HealthyThresholdCount=2,
@@ -133,8 +135,7 @@ def create_listener_rule(elbv2_client: botocore.client,
 
 def create_target(elbv2_client: botocore.client,
                   targetGroupArn: str,
-                  fargatePrivateIP: str,
-                  FARGATE_PORT: str):
+                  fargatePrivateIP: str):
     target = elbv2_client.register_targets(
         TargetGroupArn=targetGroupArn,
         Targets=[

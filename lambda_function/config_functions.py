@@ -2,30 +2,24 @@ def load_config(
         REQUEST_ORIGIN: str, REQUEST_PATH: str):
 
     CONFIG = {}
-    CONFIG['SECURITY_GROUP'] = 'sg-06cb4bf993f4ccb26'
-    CONFIG['SUBNET_ID'] = 'subnet-0882d674b17515f6a'
-    CONFIG['VPC_ID'] = 'vpc-0e58c4d6976fb2aac'
-    CONFIG['SECONDS_BETWEEN_TRIES'] = 0.25
-    CONFIG['HEALTHCHECK_PORT'] = 5000
-
     CONFIG_DICT = {
         'TOOLS':
             {
-                'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/ApiGeodeSolutions/4a4814e5912d42aa/70716e78eabafa1f', 'PROD':
+                'PROD':
                     {
-                        'CLUSTER_NAME': 'Tool_Prod', 'TASK_DEF_NAME': 'Tool_Prod', 'ORIGINS': 'https://geode-solutions.com'
+                        'CLUSTER_NAME': 'C_Tools_Prod', 'HEALTHCHECK_ROUTE': '/healthcheck', 'TASK_DEF_NAME': 'TD_Tools_Prod', 'ORIGINS': 'https://geode-solutions.com', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/ApiGeodeSolutions/4a4814e5912d42aa/70716e78eabafa1f', 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'VPC_ID': 'vpc-0e58c4d6976fb2aac', 'SECONDS_BETWEEN_TRIES': 0.25, 'HEALTHCHECK_PORT': 5000, 'ASSIGN_PUBLIC_IP': 'ENABLED'
                     }, 'DEV':
                     {
-                        'CLUSTER_NAME': 'Tool_Dev', 'TASK_DEF_NAME': 'Tool_Dev', 'ORIGINS': 'https://geode-solutions.com'
+                        'CLUSTER_NAME': 'C_Tools_Dev', 'HEALTHCHECK_ROUTE': '/healthcheck', 'TASK_DEF_NAME': 'TD_Tools_Dev', 'ORIGINS': 'https://next.geode-solutions.com', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/ApiGeodeSolutions/4a4814e5912d42aa/70716e78eabafa1f', 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'VPC_ID': 'vpc-0e58c4d6976fb2aac', 'SECONDS_BETWEEN_TRIES': 0.25, 'HEALTHCHECK_PORT': 5000, 'ASSIGN_PUBLIC_IP': 'ENABLED'
                     }
             }, 'SHARETWIN':
             {
-                'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4', 'PROD':
+                'PROD':
                     {
-                        'CLUSTER_NAME': 'ShareTwin_Prod', 'TASK_DEF_NAME': 'ShareTwin_Prod', 'ORIGINS': 'https://share_twin.app'
+                        'CLUSTER_NAME': 'C_ShareTwin_Prod', 'HEALTHCHECK_ROUTE': '/healthcheck', 'TASK_DEF_NAME': 'TD_ShareTwin_Prod', 'ORIGINS': 'https://share_twin.app', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4', 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'VPC_ID': 'vpc-0e58c4d6976fb2aac', 'SECONDS_BETWEEN_TRIES': 0.25, 'HEALTHCHECK_PORT': 5000, 'ASSIGN_PUBLIC_IP': 'ENABLED'
                     }, 'DEV':
                     {
-                        'CLUSTER_NAME': 'ShareTwin_Dev', 'TASK_DEF_NAME': 'ShareTwin_Dev', 'ORIGINS': 'https://friendly-dolphin-d9fdd1.netlify.app/'
+                        'CLUSTER_NAME': 'C_ShareTwin_Dev', 'HEALTHCHECK_ROUTE': '/healthcheck', 'TASK_DEF_NAME': 'TD_ShareTwin_Dev', 'ORIGINS': 'https://friendly-dolphin-d9fdd1.netlify.app/', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4', 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'VPC_ID': 'vpc-0e58c4d6976fb2aac', 'SECONDS_BETWEEN_TRIES': 0.25, 'HEALTHCHECK_PORT': 5000, 'ASSIGN_PUBLIC_IP': 'ENABLED'
                     }
             }
     }
@@ -49,10 +43,17 @@ def load_config(
             return make_lambda_return(403, '403 Forbidden', REQUEST_ORIGIN, {
                 'error_message': 'Domain not allowed!'})
 
-    CONFIG['LISTENER_ARN'] = CONFIG_DICT[CONFIG_TYPE]['LISTENER_ARN']
     CONFIG['CLUSTER_NAME'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['CLUSTER_NAME']
-    CONFIG['TASK_DEF_NAME'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['TASK_DEF_NAME']
+    CONFIG['HEALTHCHECK_PORT'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['HEALTHCHECK_PORT']
+    CONFIG['HEALTHCHECK_ROUTE'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['HEALTHCHECK_ROUTE']
+    CONFIG['LISTENER_ARN'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['LISTENER_ARN']
     CONFIG['ORIGINS'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['ORIGINS']
+    CONFIG['SECONDS_BETWEEN_TRIES'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['SECONDS_BETWEEN_TRIES']
+    CONFIG['SECURITY_GROUP'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['SECURITY_GROUP']
+    CONFIG['SUBNET_ID'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['SUBNET_ID']
+    CONFIG['TASK_DEF_NAME'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['TASK_DEF_NAME']
+    CONFIG['VPC_ID'] = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['VPC_ID']
+
     return CONFIG
 
 
