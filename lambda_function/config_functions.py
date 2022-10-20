@@ -67,8 +67,6 @@ def make_lambda_return(STATUS_CODE: int, STATUS_DESCRIPTION: str, ORIGIN: str, B
         )
     ])
 
-    print(type(lamdba_return))
-
     if BODY is not None:
         lamdba_return.update({'body': {}})
         for key in BODY:
