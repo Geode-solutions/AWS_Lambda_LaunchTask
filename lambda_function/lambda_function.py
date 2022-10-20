@@ -7,15 +7,14 @@ import urllib3
 import uuid
 import time
 
-import functions
+import config
 import config_functions
-
-global CONFIG
+import functions
 
 
 def lambda_handler(event, context):
 
-    print('event :', event)
+    print(f'{event=}')
 
     if 'origin' in event['headers']:
         REQUEST_ORIGIN = event['headers']['origin']
@@ -25,12 +24,12 @@ def lambda_handler(event, context):
     REQUEST_PATH = event['path']
     HTTP_METHOD = event['httpMethod']
 
-    CONFIG = config_functions.load_config(REQUEST_ORIGIN, REQUEST_PATH)
+    config_functions.load_config(REQUEST_ORIGIN, REQUEST_PATH)
     print('CONFIG :', CONFIG)
 
     try:
         if HTTP_METHOD == 'OPTIONS':
-            return config_functions.make_lambda_return(200, '200 OK', CONFIG['ORIGINS'])
+            return config_functions.make_lambda_return(200, '200 OK', config.ORIGINS)
         else:
             elbv2_client = boto3.client('elbv2')
             ecs_client = boto3.client('ecs')
@@ -48,15 +47,15 @@ def lambda_handler(event, context):
                 ecs_client, TaskArn, 100)
             functions.waitForTaskRunning(
                 ecs_client, FARGATE_CLUSTER, TaskArn, 150)
-            Target = functions.create_target(
+            Target = functions.register_target(
                 elbv2_client, TargetGroupArn, FargatePrivateIP)
             functions.waitTargetHealthy(
                 elbv2_client, TargetGroupArn, FargatePrivateIP, 100)
             functions.modifyTargetGroup(elbv2_client, TargetGroupArn)
             functions.waitForTaskResponding(ID, 100)
 
-            return config_functions.make_lambda_return(200, '200 OK', CONFIG['ORIGINS'], {'ID': ID})
+            return config_functions.make_lambda_return(200, '200 OK', config.ORIGINS, {'ID': ID})
 
     except Exception as e:
         print(e)
-        return config_functions.make_lambda_return(500, '500 NOT OK', CONFIG['ORIGINS'], {'error_message': str(e)})
+        return config_functions.make_lambda_return(500, '500 NOT OK', config.ORIGINS, {'error_message': str(e)})
