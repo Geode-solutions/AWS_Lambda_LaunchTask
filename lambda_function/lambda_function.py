@@ -23,7 +23,7 @@ def lambda_handler(event, context):
     REQUEST_PATH = event['path']
     HTTP_METHOD = event['httpMethod']
 
-    CONFIG = config.config_functions.load_config(REQUEST_ORIGIN, REQUEST_PATH)
+    CONFIG = config.Config(REQUEST_ORIGIN, REQUEST_PATH)
     print(f'{CONFIG=}')
 
     try:
@@ -46,7 +46,7 @@ def lambda_handler(event, context):
             FargatePrivateIP = functions.waitTaskAttached(
                 ecs_client, TaskArn, 100)
             functions.waitForTaskRunning(CONFIG,
-                ecs_client, TaskArn, 150)
+                                         ecs_client, TaskArn, 150)
             Target = functions.register_target(
                 elbv2_client, TargetGroupArn, FargatePrivateIP)
             functions.waitTargetHealthy(
