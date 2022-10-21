@@ -7,9 +7,6 @@ import urllib3
 import uuid
 import time
 
-import config
-
-
 def create_fargate_task(config: config, ecs_client: botocore.client, ID: str):
 
     fargate = ecs_client.run_task(
