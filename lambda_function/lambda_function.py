@@ -25,11 +25,12 @@ def lambda_handler(event, context):
     HTTP_METHOD = event['httpMethod']
 
     CONFIG = config.Config(REQUEST_ORIGIN, REQUEST_PATH)
-    print(f'{CONFIG=}')
+    print(str(CONFIG))
 
     try:
         if HTTP_METHOD == 'OPTIONS':
-            a = config_functions.make_lambda_return(200, '200 OK', config.ORIGINS)
+            a = config_functions.make_lambda_return(
+                200, '200 OK', config.ORIGINS)
             print(f'{a=}')
             return a
         else:
