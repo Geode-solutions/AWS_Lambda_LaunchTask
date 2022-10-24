@@ -55,8 +55,8 @@ def lambda_handler(event, context):
             functions.modifyTargetGroup(elbv2_client, TargetGroupArn)
             functions.waitForTaskResponding(CONFIG, ID, 100)
 
-            return config_functions.make_lambda_return(200, '200 OK', CONFIG, {'ID': ID})
+            return config_functions.make_lambda_return(CONFIG, 200, '200 OK', {'ID': ID})
 
     except Exception as e:
         print(str(e))
-        return config_functions.make_lambda_return(500, '500 NOT OK', getattr(CONFIG, 'ORIGINS'), {'error_message': str(e)})
+        return config_functions.make_lambda_return(CONFIG, 500, '500 NOT OK', {'error_message': str(e)})
