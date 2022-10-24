@@ -25,14 +25,11 @@ def lambda_handler(event, context):
     HTTP_METHOD = event['httpMethod']
 
     CONFIG = config.Config(REQUEST_ORIGIN, REQUEST_PATH)
-    print(str(CONFIG))
+    # print(str(CONFIG))
 
     try:
         if HTTP_METHOD == 'OPTIONS':
-            a = config_functions.make_lambda_return(
-                200, '200 OK', getattr(CONFIG, 'ORIGINS'))
-            print(f'{a=}')
-            return a
+            return config_functions.make_lambda_return(200, '200 OK', getattr(CONFIG, 'ORIGINS'))
         else:
             elbv2_client = boto3.client('elbv2')
             ecs_client = boto3.client('ecs')
@@ -58,8 +55,8 @@ def lambda_handler(event, context):
             functions.modifyTargetGroup(elbv2_client, TargetGroupArn)
             functions.waitForTaskResponding(CONFIG, ID, 100)
 
-            return config_functions.make_lambda_return(200, '200 OK', config.ORIGINS, {'ID': ID})
+            return config_functions.make_lambda_return(200, '200 OK', getattr(CONFIG, 'ORIGINS'), {'ID': ID})
 
     except Exception as e:
         print(e)
-        return config_functions.make_lambda_return(500, '500 NOT OK', config.ORIGINS, {'error_message': str(e)})
+        return config_functions.make_lambda_return(500, '500 NOT OK', getattr(CONFIG, 'ORIGINS'), {'error_message': str(e)})
