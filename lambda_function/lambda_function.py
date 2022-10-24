@@ -30,7 +30,7 @@ def lambda_handler(event, context):
     try:
         if HTTP_METHOD == 'OPTIONS':
             a = config_functions.make_lambda_return(
-                200, '200 OK', config.ORIGINS)
+                200, '200 OK', getattr(CONFIG, 'ORIGINS'))
             print(f'{a=}')
             return a
         else:
