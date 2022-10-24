@@ -7,7 +7,7 @@ import urllib3
 import uuid
 import time
 
-def create_fargate_task(config: config, ecs_client: botocore.client, ID: str):
+def create_fargate_task(config, ecs_client: botocore.client, ID: str):
 
     fargate = ecs_client.run_task(
         cluster=config.CLUSTER_NAME,
@@ -54,7 +54,7 @@ def create_fargate_task(config: config, ecs_client: botocore.client, ID: str):
     return taskArn
 
 
-def create_target_group(config: config, elbv2_client: botocore.client,
+def create_target_group(config, elbv2_client: botocore.client,
                         ID: str):
 
     targetGroup = elbv2_client.create_target_group(
@@ -126,7 +126,7 @@ def create_listener_rule(elbv2_client: botocore.client,
     return RuleArn
 
 
-def register_target(config: config, elbv2_client: botocore.client,
+def register_target(config, elbv2_client: botocore.client,
                     targetGroupArn: str,
                     fargatePrivateIP: str):
     target = elbv2_client.register_targets(
@@ -156,7 +156,7 @@ def addTag(ecs_client: botocore.client,
     )
 
 
-def waitTaskAttached(config: config,
+def waitTaskAttached(config,
                      ecs_client: botocore.client,
                      taskArn: str,
                      numberOfTries: int):
@@ -177,7 +177,7 @@ def waitTaskAttached(config: config,
     raise Exception('Task not attached')
 
 
-def waitTargetHealthy(config: config,
+def waitTargetHealthy(config,
                       elbv2_client: botocore.client,
                       TargetGroupArn: str,
                       FargatePrivateIP: str,
@@ -202,7 +202,7 @@ def waitTargetHealthy(config: config,
     raise Exception('Target not healthy')
 
 
-def modifyTargetGroup(config: config,
+def modifyTargetGroup(config,
                       elbv2_client: botocore.client,
                       TargetGroupArn: str):
     response = elbv2_client.modify_target_group(
@@ -214,7 +214,7 @@ def modifyTargetGroup(config: config,
     )
 
 
-def waitForTaskRunning(config: config, ecs_client: botocore.client,
+def waitForTaskRunning(config, ecs_client: botocore.client,
                        TaskArn: str,
                        numberOfTries: int):
 
@@ -231,7 +231,7 @@ def waitForTaskRunning(config: config, ecs_client: botocore.client,
     raise Exception('Task not running')
 
 
-def waitForTaskResponding(config: config,
+def waitForTaskResponding(config,
                           ID: str,
                           numberOfTries: int):
     for tries in range(numberOfTries):
