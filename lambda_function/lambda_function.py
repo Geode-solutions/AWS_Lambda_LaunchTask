@@ -29,7 +29,9 @@ def lambda_handler(event, context):
 
     try:
         if HTTP_METHOD == 'OPTIONS':
-            return config_functions.make_lambda_return(200, '200 OK', config.ORIGINS)
+            a = config_functions.make_lambda_return(200, '200 OK', config.ORIGINS)
+            print(f'{a=}')
+            return a
         else:
             elbv2_client = boto3.client('elbv2')
             ecs_client = boto3.client('ecs')
