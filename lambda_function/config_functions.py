@@ -11,9 +11,6 @@ def make_lambda_return(CONFIG, STATUS_CODE: int, STATUS_DESCRIPTION: str, BODY: 
         )
     ])
 
-    print(f'{lamdba_return=}')
     if BODY is not None:
         lamdba_return['body'] = json.dumps(BODY)
-
-    print(f'{lamdba_return=}')
     return lamdba_return
