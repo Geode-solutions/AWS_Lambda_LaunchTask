@@ -1,0 +1,13 @@
+{
+  "statusCode": 200,
+  "statusDescription": "200 OK",
+  "isBase64Encoded": False,
+  "headers": {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "https://next.geode-solutions.com",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  },
+  "body": {
+    "ID": "d4fab0f690134361af55e4358df80379"
+  }
+}

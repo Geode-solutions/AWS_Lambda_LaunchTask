@@ -1,3 +1,6 @@
+import json
+
+
 def make_lambda_return(CONFIG, STATUS_CODE: int, STATUS_DESCRIPTION: str, BODY: dict = None):
 
     lamdba_return = dict([
@@ -8,9 +11,9 @@ def make_lambda_return(CONFIG, STATUS_CODE: int, STATUS_DESCRIPTION: str, BODY: 
         )
     ])
 
+    print(f'{lamdba_return=}')
     if BODY is not None:
-        lamdba_return.update({'body': {}})
-        for key in BODY:
-            lamdba_return['body'][key] = BODY[key]
+        lamdba_return['body'] = json.dumps(BODY)
 
+    print(f'{lamdba_return=}')
     return lamdba_return

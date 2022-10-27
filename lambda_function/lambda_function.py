@@ -23,9 +23,7 @@ def lambda_handler(event, context):
 
     REQUEST_PATH = event['path']
     HTTP_METHOD = event['httpMethod']
-
     CONFIG = config.Config(REQUEST_ORIGIN, REQUEST_PATH)
-    # print(str(CONFIG))
 
     try:
         if HTTP_METHOD == 'OPTIONS':
@@ -44,19 +42,19 @@ def lambda_handler(event, context):
             RuleArn = functions.create_listener_rule(
                 CONFIG, elbv2_client, ID, TargetGroupArn, 0)
             functions.addTag(ecs_client, TaskArn, 'RuleArn', RuleArn)
-            FargatePrivateIP = functions.waitTaskAttached(
-                ecs_client, TaskArn, 100)
+            FargatePrivateIP = functions.waitTaskAttached(CONFIG,
+                                                          ecs_client, TaskArn, 100)
             functions.waitForTaskRunning(CONFIG,
                                          ecs_client, TaskArn, 150)
-            Target = functions.register_target(
-                elbv2_client, TargetGroupArn, FargatePrivateIP)
-            functions.waitTargetHealthy(
-                elbv2_client, TargetGroupArn, FargatePrivateIP, 100)
+            Target = functions.register_target(CONFIG,
+                                               elbv2_client, TargetGroupArn, FargatePrivateIP)
+            functions.waitTargetHealthy(CONFIG,
+                                        elbv2_client, TargetGroupArn, FargatePrivateIP, 100)
             functions.modifyTargetGroup(elbv2_client, TargetGroupArn)
             functions.waitForTaskResponding(CONFIG, ID, 100)
 
             return config_functions.make_lambda_return(CONFIG, 200, '200 OK', {'ID': ID})
 
     except Exception as e:
-        print(str(e))
+        print(f'{str(e)=}')
         return config_functions.make_lambda_return(CONFIG, 500, '500 NOT OK', {'error_message': str(e)})

@@ -9,7 +9,7 @@ import time
 
 
 def create_fargate_task(CONFIG, ecs_client: botocore.client, ID: str):
-
+    
     fargate = ecs_client.run_task(
         cluster=getattr(CONFIG, 'CLUSTER_NAME'),
         count=1,

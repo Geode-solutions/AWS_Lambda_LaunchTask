@@ -1,5 +1,6 @@
 from ..lambda_function import config_functions
 from ..lambda_function import config
+import json
 
 
 def test_load_config():
@@ -55,9 +56,7 @@ def test_make_lambda_return():
             'Access-Control-Allow-Origin': CONFIG.ORIGINS,
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
         },
-        'body': {
-            'ID': 123456
-        }
+        'body': json.dumps(BODY)
     }
 
     STATUS_CODE_403 = 403
@@ -76,5 +75,5 @@ def test_make_lambda_return():
             'Access-Control-Allow-Origin': CONFIG.ORIGINS,
             'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
         },
-        'body': BODY
+        'body': json.dumps(BODY)
     }
