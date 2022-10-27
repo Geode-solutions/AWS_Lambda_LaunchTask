@@ -1,15 +1,18 @@
+import json
+import uuid
 from ..lambda_function import config_functions
 from ..lambda_function import config
-import json
 
 
 def test_load_config():
     ORIGIN_GEODE_SOLUTIONS = 'https://geode-solutions.com'
     PATH_TOOLS_CREATE_BACKEND = '/tools/createbackend'
-    CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS, PATH_TOOLS_CREATE_BACKEND)
+    ID = str(uuid.uuid4()).replace('-', '')
+    CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS, PATH_TOOLS_CREATE_BACKEND, ID)
 
     assert type(CONFIG.ASSIGN_PUBLIC_IP) is str
     assert type(CONFIG.CLUSTER_NAME) is str
+    assert type(CONFIG.ENVIRONMENT_VARIABLES) is dict
     assert type(CONFIG.HEALTHCHECK_PORT) is int
     assert type(CONFIG.HEALTHCHECK_ROUTE) is str
     assert type(CONFIG.LISTENER_ARN) is str
@@ -27,7 +30,8 @@ def test_make_lambda_return():
     STATUS_DESCRIPTION_200 = '200 OK'
     ORIGIN_GEODE_SOLUTIONS = 'https://geode-solutions.com'
     PATH_TOOLS_CREATE_BACKEND = '/tools/createbackend'
-    CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS, PATH_TOOLS_CREATE_BACKEND)
+    ID = str(uuid.uuid4()).replace('-', '')
+    CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS, PATH_TOOLS_CREATE_BACKEND, ID)
 
     lambda_return = config_functions.make_lambda_return(CONFIG,
                                                         STATUS_CODE_200, STATUS_DESCRIPTION_200)

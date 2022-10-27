@@ -9,7 +9,7 @@ import time
 
 
 def create_fargate_task(CONFIG, ecs_client: botocore.client, ID: str):
-    
+
     fargate = ecs_client.run_task(
         cluster=getattr(CONFIG, 'CLUSTER_NAME'),
         count=1,
@@ -25,24 +25,8 @@ def create_fargate_task(CONFIG, ecs_client: botocore.client, ID: str):
                 'assignPublicIp': getattr(CONFIG, 'ASSIGN_PUBLIC_IP')
             }
         },
-        overrides={
-            'containerOverrides': [
-                {
-                    'name': 'ToolsContainer',
-                    'environment': [
-                        {
-                            'name': 'ID',
-                            'value': ID
-                        },
-                        {
-                            'name': 'FLASK_ENV',
-                            'value': 'production',
-                        },
-
-                    ],
-                },
-            ],
-        },
+        overrides={'containerOverrides': [
+            getattr(CONFIG, 'ENVIRONMENT_VARIABLES')]},
     )
 
     failures = fargate['failures']

@@ -23,7 +23,10 @@ def lambda_handler(event, context):
 
     REQUEST_PATH = event['path']
     HTTP_METHOD = event['httpMethod']
-    CONFIG = config.Config(REQUEST_ORIGIN, REQUEST_PATH)
+    ID = str(uuid.uuid4()).replace('-', '')
+    print(f'{ID=}')
+
+    CONFIG = config.Config(REQUEST_ORIGIN, REQUEST_PATH, ID)
 
     try:
         if HTTP_METHOD == 'OPTIONS':
@@ -31,8 +34,6 @@ def lambda_handler(event, context):
         else:
             elbv2_client = boto3.client('elbv2')
             ecs_client = boto3.client('ecs')
-            ID = str(uuid.uuid4()).replace('-', '')
-            print(f'{ID=}')
 
             TaskArn = functions.create_fargate_task(CONFIG, ecs_client, ID)
             TargetGroupArn = functions.create_target_group(
