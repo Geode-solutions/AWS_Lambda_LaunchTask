@@ -1,4 +1,4 @@
-import config_functions
+from ..lambda_function import config_functions
 
 class Config:
     def __init__(self, REQUEST_ORIGIN: str, REQUEST_PATH: str, ID: str = None):

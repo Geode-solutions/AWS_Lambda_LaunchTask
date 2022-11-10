@@ -1,6 +1,5 @@
 import json
 
-
 def make_lambda_return(CONFIG, STATUS_CODE: int, STATUS_DESCRIPTION: str, BODY: dict = None):
 
     lamdba_return = dict([
