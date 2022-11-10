@@ -1,3 +1,5 @@
+import config_functions
+
 class Config:
     def __init__(self, REQUEST_ORIGIN: str, REQUEST_PATH: str, ID: str = None):
 
@@ -18,7 +20,7 @@ class Config:
                 {
                     'PROD':
                         {
-                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Prod', 'ENVIRONMENT_VARIABLES': {'name': 'GeodeBackEnd', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4', 'ORIGINS': 'https://share_twin.app', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_ShareTwin_Prod', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
+                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Prod', 'ENVIRONMENT_VARIABLES': {'name': 'GeodeBackEnd', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4', 'ORIGINS': '*', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_ShareTwin_Prod', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
                         }, 'DEV':
                         {
                             'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Dev', 'ENVIRONMENT_VARIABLES': {'name': 'GeodeBackEnd', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4', 'ORIGINS': 'https://friendly-dolphin-d9fdd1.netlify.app/', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_ShareTwin_Dev', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
@@ -28,21 +30,25 @@ class Config:
 
         if '/tools/' in REQUEST_PATH:
             CONFIG_TYPE = 'TOOLS'
-            if REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['PROD']['ORIGINS']:
+            if REQUEST_ORIGIN == '':
+                CONFIG_TYPE = 'DEV'
+            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['PROD']['ORIGINS']:
                 CONFIG_ENV = 'PROD'
             elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['DEV']['ORIGINS']:
                 CONFIG_ENV = 'DEV'
             else:
-                raise make_lambda_return(403, '403 Forbidden', '', {
+                raise config_functions.make_lambda_return(403, '403 Forbidden', REQUEST_ORIGIN, {
                     'error_message': 'Domain not allowed!'})
         elif '/sharetwin/' in REQUEST_PATH:
             CONFIG_TYPE = 'SHARETWIN'
-            if REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['PROD']['ORIGINS']:
+            if REQUEST_ORIGIN == '':
+                CONFIG_TYPE = 'DEV'
+            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['PROD']['ORIGINS']:
                 CONFIG_TYPE = 'PROD'
             elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['DEV']['ORIGINS']:
                 CONFIG_TYPE = 'DEV'
             else:
-                raise make_lambda_return(403, '403 Forbidden', REQUEST_ORIGIN, {
+                raise config_functions.make_lambda_return(403, '403 Forbidden', REQUEST_ORIGIN, {
                     'error_message': 'Domain not allowed!'})
 
         self.ASSIGN_PUBLIC_IP = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['ASSIGN_PUBLIC_IP']
