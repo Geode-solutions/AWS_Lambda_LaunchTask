@@ -1,5 +1,6 @@
 from ..lambda_function import config_functions
 
+
 class Config:
     def __init__(self, REQUEST_ORIGIN: str, REQUEST_PATH: str, ID: str = None):
 
@@ -36,9 +37,6 @@ class Config:
                 CONFIG_ENV = 'PROD'
             elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['DEV']['ORIGINS']:
                 CONFIG_ENV = 'DEV'
-            else:
-                raise config_functions.make_lambda_return(403, '403 Forbidden', REQUEST_ORIGIN, {
-                    'error_message': 'Domain not allowed!'})
         elif '/sharetwin/' in REQUEST_PATH:
             CONFIG_TYPE = 'SHARETWIN'
             if REQUEST_ORIGIN == '':
@@ -47,9 +45,6 @@ class Config:
                 CONFIG_TYPE = 'PROD'
             elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['DEV']['ORIGINS']:
                 CONFIG_TYPE = 'DEV'
-            else:
-                raise config_functions.make_lambda_return(403, '403 Forbidden', REQUEST_ORIGIN, {
-                    'error_message': 'Domain not allowed!'})
 
         self.ASSIGN_PUBLIC_IP = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['ASSIGN_PUBLIC_IP']
         self.CLUSTER_NAME = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['CLUSTER_NAME']
