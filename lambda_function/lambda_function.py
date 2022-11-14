@@ -45,7 +45,7 @@ def lambda_handler(event, context):
             FargatePrivateIP = functions.waitTaskAttached(CONFIG,
                                                           ecs_client, TaskArn, 100)
             functions.waitForTaskRunning(CONFIG,
-                                         ecs_client, TaskArn, 150)
+                                         ecs_client, TaskArn, 500)
             Target = functions.register_target(CONFIG,
                                                elbv2_client, TargetGroupArn, FargatePrivateIP)
             functions.waitTargetHealthy(CONFIG,
