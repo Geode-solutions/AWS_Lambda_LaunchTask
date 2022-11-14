@@ -29,6 +29,7 @@ class Config:
                 }
         }
 
+
         if '/tools/' in REQUEST_PATH:
             CONFIG_TYPE = 'TOOLS'
             if REQUEST_ORIGIN == '':
@@ -42,9 +43,9 @@ class Config:
             if REQUEST_ORIGIN == '':
                 CONFIG_TYPE = 'DEV'
             elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['PROD']['ORIGINS']:
-                CONFIG_TYPE = 'PROD'
+                CONFIG_ENV = 'PROD'
             elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]['DEV']['ORIGINS']:
-                CONFIG_TYPE = 'DEV'
+                CONFIG_ENV = 'DEV'
 
         self.ASSIGN_PUBLIC_IP = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['ASSIGN_PUBLIC_IP']
         self.CLUSTER_NAME = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['CLUSTER_NAME']
