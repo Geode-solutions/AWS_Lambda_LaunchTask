@@ -1,4 +1,4 @@
-from lambda_function import config_functions
+import config_functions
 
 
 class Config:
