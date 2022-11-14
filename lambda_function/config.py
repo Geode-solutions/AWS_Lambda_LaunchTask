@@ -1,4 +1,4 @@
-import config_functions
+from . import config_functions
 
 
 class Config:
