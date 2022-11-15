@@ -12,19 +12,31 @@ class Config:
                 {
                     'PROD':
                         {
-                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_Tools_Prod', 'ENVIRONMENT_VARIABLES': {'name': 'ToolsContainer', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/ApiGeodeSolutions/4a4814e5912d42aa/70716e78eabafa1f', 'ORIGINS': 'https://geode-solutions.com', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_Tools_Prod', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
+                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_Tools_Prod', 'ENVIRONMENT_VARIABLES': {'name': 'ToolsContainer', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/ApiGeodeSolutions/4a4814e5912d42aa/70716e78eabafa1f',         'NUMBER_OF_TRIES_TARGET_HEALTHY': 100,
+                            'NUMBER_OF_TRIES_TASK_ATTACHED': 100,
+                            'NUMBER_OF_TRIES_TASK_RESPONDING': 100,
+                            'NUMBER_OF_TRIES_TASK_RUNNING': 100, 'ORIGINS': 'https://geode-solutions.com', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_Tools_Prod', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
                         }, 'DEV':
                         {
-                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_Tools_Dev', 'ENVIRONMENT_VARIABLES': {'name': 'ToolsContainer', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/ApiGeodeSolutions/4a4814e5912d42aa/70716e78eabafa1f', 'ORIGINS': 'https://next.geode-solutions.com', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_Tools_Dev', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
+                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_Tools_Dev', 'ENVIRONMENT_VARIABLES': {'name': 'ToolsContainer', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/ApiGeodeSolutions/4a4814e5912d42aa/70716e78eabafa1f',         'NUMBER_OF_TRIES_TARGET_HEALTHY': 100,
+                            'NUMBER_OF_TRIES_TASK_ATTACHED': 100,
+                            'NUMBER_OF_TRIES_TASK_RESPONDING': 100,
+                            'NUMBER_OF_TRIES_TASK_RUNNING': 100, 'ORIGINS': 'https://next.geode-solutions.com', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_Tools_Dev', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
                         }
                 }, 'SHARETWIN':
                 {
                     'PROD':
                         {
-                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Prod', 'ENVIRONMENT_VARIABLES': {'name': 'GeodeBackEnd', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4', 'ORIGINS': '*', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_ShareTwin_Prod', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
+                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Prod', 'ENVIRONMENT_VARIABLES': {'name': 'GeodeBackEnd', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4',         'NUMBER_OF_TRIES_TARGET_HEALTHY': 500,
+                            'NUMBER_OF_TRIES_TASK_ATTACHED': 500,
+                            'NUMBER_OF_TRIES_TASK_RESPONDING': 500,
+                            'NUMBER_OF_TRIES_TASK_RUNNING': 500, 'ORIGINS': '*', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_ShareTwin_Prod', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
                         }, 'DEV':
                         {
-                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Dev', 'ENVIRONMENT_VARIABLES': {'name': 'GeodeBackEnd', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4', 'ORIGINS': 'https://friendly-dolphin-d9fdd1.netlify.app/', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_ShareTwin_Dev', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
+                            'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Dev', 'ENVIRONMENT_VARIABLES': {'name': 'GeodeBackEnd', 'environment': [{'name': 'ID', 'value': ID}]}, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': '/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4',         'NUMBER_OF_TRIES_TARGET_HEALTHY': 500,
+                            'NUMBER_OF_TRIES_TASK_ATTACHED': 500,
+                            'NUMBER_OF_TRIES_TASK_RESPONDING': 500,
+                            'NUMBER_OF_TRIES_TASK_RUNNING': 500, 'ORIGINS': 'https://friendly-dolphin-d9fdd1.netlify.app/', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-06cb4bf993f4ccb26', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_ShareTwin_Dev', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
                         }
                 }
         }
@@ -53,12 +65,21 @@ class Config:
         self.HEALTHCHECK_PORT = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['HEALTHCHECK_PORT']
         self.HEALTHCHECK_ROUTE = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['HEALTHCHECK_ROUTE']
         self.LISTENER_ARN = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['LISTENER_ARN']
+        self.NUMBER_OF_TRIES_TARGET_HEALTHY = CONFIG_DICT[
+            CONFIG_TYPE][CONFIG_ENV]['NUMBER_OF_TRIES_TARGET_HEALTHY']
+        self.NUMBER_OF_TRIES_TASK_ATTACHED = CONFIG_DICT[
+            CONFIG_TYPE][CONFIG_ENV]['NUMBER_OF_TRIES_TASK_ATTACHED']
+        self.NUMBER_OF_TRIES_TASK_RESPONDING = CONFIG_DICT[
+            CONFIG_TYPE][CONFIG_ENV]['NUMBER_OF_TRIES_TASK_RESPONDING']
+        self.NUMBER_OF_TRIES_TASK_RUNNING = CONFIG_DICT[
+            CONFIG_TYPE][CONFIG_ENV]['NUMBER_OF_TRIES_TASK_RUNNING']
         self.ORIGINS = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['ORIGINS']
         self.SECONDS_BETWEEN_TRIES = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['SECONDS_BETWEEN_TRIES']
         self.SECURITY_GROUP = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['SECURITY_GROUP']
         self.SUBNET_ID = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['SUBNET_ID']
         self.TASK_DEF_NAME = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['TASK_DEF_NAME']
         self.VPC_ID = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['VPC_ID']
+
 
 def make_lambda_return(CONFIG, STATUS_CODE: int, STATUS_DESCRIPTION: str, BODY: dict = None):
 

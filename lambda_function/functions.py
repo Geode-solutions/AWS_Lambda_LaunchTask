@@ -146,9 +146,10 @@ def addTag(ecs_client: botocore.client,
 
 def waitTaskAttached(CONFIG,
                      ecs_client: botocore.client,
-                     taskArn: str,
-                     numberOfTries: int):
-    for tries in range(numberOfTries):
+                     taskArn: str):
+    print('Wait task attached')
+    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_ATTACHED')):
+        print(f'{tries=}')
         taskDescription = ecs_client.describe_tasks(
             cluster=CONFIG.CLUSTER_NAME,
             tasks=[taskArn]
@@ -168,9 +169,10 @@ def waitTaskAttached(CONFIG,
 def waitTargetHealthy(CONFIG,
                       elbv2_client: botocore.client,
                       TargetGroupArn: str,
-                      FargatePrivateIP: str,
-                      numberOfTries: int):
-    for tries in range(numberOfTries):
+                      FargatePrivateIP: str):
+    print('Wait target healthy')
+    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TARGET_HEALTHY')):
+        print(f'{tries=}')
         targetHealthDescription = elbv2_client.describe_target_health(
             TargetGroupArn=TargetGroupArn,
             Targets=[
@@ -202,10 +204,10 @@ def modifyTargetGroup(elbv2_client: botocore.client,
 
 
 def waitForTaskRunning(CONFIG, ecs_client: botocore.client,
-                       TaskArn: str,
-                       numberOfTries: int):
-
-    for tries in range(numberOfTries):
+                       TaskArn: str):
+    print('Wait task running')
+    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_RUNNING')):
+        print(f'{tries=}')
         taskDescription = ecs_client.describe_tasks(
             cluster=getattr(CONFIG, 'CLUSTER_NAME'), tasks=[TaskArn])
         taskStatus = taskDescription['tasks'][0]['lastStatus']
@@ -219,9 +221,10 @@ def waitForTaskRunning(CONFIG, ecs_client: botocore.client,
 
 
 def waitForTaskResponding(CONFIG,
-                          ID: str,
-                          numberOfTries: int):
-    for tries in range(numberOfTries):
+                          ID: str):
+    print('Wait task responding')
+    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_RESPONDING')):
+        print(f'{tries=}')
         https = urllib3.PoolManager()
         r = https.request('POST', f'https://api.geode-solutions.com/{ID}/ping')
         if r.status != 200:

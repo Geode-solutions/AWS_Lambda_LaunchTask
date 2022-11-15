@@ -16,6 +16,10 @@ def test_load_config():
     assert type(CONFIG.HEALTHCHECK_PORT) is int
     assert type(CONFIG.HEALTHCHECK_ROUTE) is str
     assert type(CONFIG.LISTENER_ARN) is str
+    assert type(CONFIG.NUMBER_OF_TRIES_TARGET_HEALTHY) is int
+    assert type(CONFIG.NUMBER_OF_TRIES_TASK_ATTACHED) is int
+    assert type(CONFIG.NUMBER_OF_TRIES_TASK_RESPONDING) is int
+    assert type(CONFIG.NUMBER_OF_TRIES_TASK_RUNNING) is int
     assert type(CONFIG.ORIGINS) is str
     assert type(CONFIG.SECONDS_BETWEEN_TRIES) is float
     assert type(CONFIG.SECURITY_GROUP) is str

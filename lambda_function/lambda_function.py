@@ -42,16 +42,15 @@ def lambda_handler(event, context):
             RuleArn = functions.create_listener_rule(
                 CONFIG, elbv2_client, ID, TargetGroupArn, 0)
             functions.addTag(ecs_client, TaskArn, 'RuleArn', RuleArn)
-            FargatePrivateIP = functions.waitTaskAttached(CONFIG,
-                                                          ecs_client, TaskArn, 100)
-            functions.waitForTaskRunning(CONFIG,
-                                         ecs_client, TaskArn, 500)
-            Target = functions.register_target(CONFIG,
-                                               elbv2_client, TargetGroupArn, FargatePrivateIP)
-            functions.waitTargetHealthy(CONFIG,
-                                        elbv2_client, TargetGroupArn, FargatePrivateIP, 100)
+            FargatePrivateIP = functions.waitTaskAttached(
+                CONFIG, ecs_client, TaskArn)
+            functions.waitForTaskRunning(CONFIG, ecs_client, TaskArn)
+            Target = functions.register_target(
+                CONFIG, elbv2_client, TargetGroupArn, FargatePrivateIP)
+            functions.waitTargetHealthy(
+                CONFIG, elbv2_client, TargetGroupArn, FargatePrivateIP)
             functions.modifyTargetGroup(elbv2_client, TargetGroupArn)
-            functions.waitForTaskResponding(CONFIG, ID, 100)
+            functions.waitForTaskResponding(CONFIG, ID)
 
             return config.make_lambda_return(CONFIG, 200, '200 OK', {'ID': ID})
 
