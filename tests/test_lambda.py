@@ -10,6 +10,7 @@ def test_load_config():
     CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS,
                            PATH_TOOLS_CREATE_BACKEND, ID)
 
+    assert type(CONFIG.API_URL) is str
     assert type(CONFIG.ASSIGN_PUBLIC_IP) is str
     assert type(CONFIG.CLUSTER_NAME) is str
     assert type(CONFIG.ENVIRONMENT_VARIABLES) is dict
@@ -20,6 +21,7 @@ def test_load_config():
     assert type(CONFIG.NUMBER_OF_TRIES_TASK_ATTACHED) is int
     assert type(CONFIG.NUMBER_OF_TRIES_TASK_RESPONDING) is int
     assert type(CONFIG.NUMBER_OF_TRIES_TASK_RUNNING) is int
+    assert type(CONFIG.PING_ROUTE) is str
     assert type(CONFIG.ORIGINS) is str
     assert type(CONFIG.SECONDS_BETWEEN_TRIES) is float
     assert type(CONFIG.SECURITY_GROUP) is str
