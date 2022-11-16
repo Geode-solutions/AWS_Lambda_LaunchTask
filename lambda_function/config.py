@@ -44,7 +44,7 @@ class Config:
                                 'name': 'GeodeBackEnd', 'environment': [{
                                     'name': 'ID', 'value': ID}]
                             }, 'HEALTHCHECK_PORT': 443, 'HEALTHCHECK_ROUTE': f'/viewer', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4', 'NUMBER_OF_TRIES_TARGET_HEALTHY': 1000, 'NUMBER_OF_TRIES_TASK_ATTACHED': 50, 'NUMBER_OF_TRIES_TASK_RESPONDING': 1000, 'NUMBER_OF_TRIES_TASK_RUNNING': 500,
-                            'PING_ROUTE': f'/{ID}/geode/ping',
+                            'PING_ROUTE': f'/viewer',
                             'ORIGINS': 'https://friendly-dolphin-d9fdd1.netlify.app/', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-0fb186be26fbd8144', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_ShareTwin_Dev', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
                         }
                 }
