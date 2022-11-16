@@ -184,8 +184,12 @@ def waitTargetHealthy(CONFIG,
         )
         targetHealthStatus = targetHealthDescription['TargetHealthDescriptions'][0]['TargetHealth']['State']
 
+        print(f'{targetHealthStatus=}')
         if targetHealthStatus == 'healthy':
             print('Target healthy !')
+            return
+        if targetHealthStatus == 'unhealthy':
+            print('Target unhealthy !')
             return
         else:
             time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
