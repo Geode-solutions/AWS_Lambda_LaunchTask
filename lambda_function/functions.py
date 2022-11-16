@@ -190,7 +190,7 @@ def waitTargetHealthy(CONFIG,
             return
         if targetHealthStatus == 'unhealthy':
             print('Target unhealthy !')
-            return
+            raise Exception('Target unhealthy !')
         else:
             time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
     raise Exception('Target not healthy')
