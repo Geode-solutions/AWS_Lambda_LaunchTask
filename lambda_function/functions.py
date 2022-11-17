@@ -232,7 +232,7 @@ def waitForTaskResponding(CONFIG,
         API_URL = getattr(CONFIG, 'API_URL')
         PING_ROUTE = getattr(CONFIG, 'PING_ROUTE')
         print(f'{API_URL}{PING_ROUTE}')
-        r = https.request('GET', f'{API_URL}{PING_ROUTE}')
+        r = https.request('POST', f'{API_URL}{PING_ROUTE}')
         if r.status != 200:
             print('Task didn''t respond')
             time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
