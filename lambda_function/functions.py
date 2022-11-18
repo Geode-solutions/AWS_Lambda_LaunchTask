@@ -42,7 +42,6 @@ def create_fargate_task(CONFIG, ecs_client: botocore.client, ID: str):
 def create_target_group(CONFIG, elbv2_client: botocore.client,
                         ID: str):
 
-    HEALTHCHECK_ROUTE = getattr(CONFIG, 'HEALTHCHECK_ROUTE')
     targetGroup = elbv2_client.create_target_group(
         Name=ID,
         Protocol='HTTPS',
@@ -52,7 +51,7 @@ def create_target_group(CONFIG, elbv2_client: botocore.client,
         HealthCheckProtocol='HTTPS',
         HealthCheckPort='traffic-port',
         HealthCheckEnabled=True,
-        HealthCheckPath=f'/{ID}{HEALTHCHECK_ROUTE}',
+        HealthCheckPath=getattr(CONFIG, 'HEALTHCHECK_ROUTE'),
         HealthCheckIntervalSeconds=5,
         HealthCheckTimeoutSeconds=4,
         HealthyThresholdCount=2,
@@ -146,9 +145,10 @@ def addTag(ecs_client: botocore.client,
 
 def waitTaskAttached(CONFIG,
                      ecs_client: botocore.client,
-                     taskArn: str,
-                     numberOfTries: int):
-    for tries in range(numberOfTries):
+                     taskArn: str):
+    print('Wait task attached')
+    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_ATTACHED')):
+        print(f'{tries=}')
         taskDescription = ecs_client.describe_tasks(
             cluster=CONFIG.CLUSTER_NAME,
             tasks=[taskArn]
@@ -168,9 +168,10 @@ def waitTaskAttached(CONFIG,
 def waitTargetHealthy(CONFIG,
                       elbv2_client: botocore.client,
                       TargetGroupArn: str,
-                      FargatePrivateIP: str,
-                      numberOfTries: int):
-    for tries in range(numberOfTries):
+                      FargatePrivateIP: str):
+    print('Wait target healthy')
+    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TARGET_HEALTHY')):
+        print(f'{tries=}')
         targetHealthDescription = elbv2_client.describe_target_health(
             TargetGroupArn=TargetGroupArn,
             Targets=[
@@ -182,9 +183,13 @@ def waitTargetHealthy(CONFIG,
         )
         targetHealthStatus = targetHealthDescription['TargetHealthDescriptions'][0]['TargetHealth']['State']
 
+        print(f'{targetHealthStatus=}')
         if targetHealthStatus == 'healthy':
             print('Target healthy !')
             return
+        if targetHealthStatus == 'unhealthy':
+            print('Target unhealthy !')
+            raise Exception('Target unhealthy !')
         else:
             time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
     raise Exception('Target not healthy')
@@ -202,10 +207,10 @@ def modifyTargetGroup(elbv2_client: botocore.client,
 
 
 def waitForTaskRunning(CONFIG, ecs_client: botocore.client,
-                       TaskArn: str,
-                       numberOfTries: int):
-
-    for tries in range(numberOfTries):
+                       TaskArn: str):
+    print('Wait task running')
+    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_RUNNING')):
+        print(f'{tries=}')
         taskDescription = ecs_client.describe_tasks(
             cluster=getattr(CONFIG, 'CLUSTER_NAME'), tasks=[TaskArn])
         taskStatus = taskDescription['tasks'][0]['lastStatus']
@@ -219,17 +224,21 @@ def waitForTaskRunning(CONFIG, ecs_client: botocore.client,
 
 
 def waitForTaskResponding(CONFIG,
-                          ID: str,
-                          numberOfTries: int):
-    for tries in range(numberOfTries):
+                          ID: str):
+    print('Wait task responding')
+    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_RESPONDING')):
+        print(f'{tries=}')
         https = urllib3.PoolManager()
-        r = https.request('POST', f'https://api.geode-solutions.com/{ID}/ping')
+        API_URL = getattr(CONFIG, 'API_URL')
+        PING_ROUTE = getattr(CONFIG, 'PING_ROUTE')
+        print(f'{API_URL}{PING_ROUTE}')
+        r = https.request('POST', f'{API_URL}{PING_ROUTE}')
         if r.status != 200:
             print('Task didn''t respond')
             time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
         else:
             print('response : ', r.data)
-            print('Task responded ! ')
+            print('Task responded !')
             return
 
     raise Exception('Task not responding')

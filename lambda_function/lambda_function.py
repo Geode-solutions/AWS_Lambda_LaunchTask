@@ -9,7 +9,6 @@ import time
 
 import config
 import functions
-import config_functions
 
 
 def lambda_handler(event, context):
@@ -30,7 +29,7 @@ def lambda_handler(event, context):
 
     try:
         if HTTP_METHOD == 'OPTIONS':
-            return config_functions.make_lambda_return(CONFIG, 200, '200 OK')
+            return config.make_lambda_return(CONFIG, 200, '200 OK')
         else:
             elbv2_client = boto3.client('elbv2')
             ecs_client = boto3.client('ecs')
@@ -43,19 +42,18 @@ def lambda_handler(event, context):
             RuleArn = functions.create_listener_rule(
                 CONFIG, elbv2_client, ID, TargetGroupArn, 0)
             functions.addTag(ecs_client, TaskArn, 'RuleArn', RuleArn)
-            FargatePrivateIP = functions.waitTaskAttached(CONFIG,
-                                                          ecs_client, TaskArn, 100)
-            functions.waitForTaskRunning(CONFIG,
-                                         ecs_client, TaskArn, 150)
-            Target = functions.register_target(CONFIG,
-                                               elbv2_client, TargetGroupArn, FargatePrivateIP)
-            functions.waitTargetHealthy(CONFIG,
-                                        elbv2_client, TargetGroupArn, FargatePrivateIP, 100)
+            FargatePrivateIP = functions.waitTaskAttached(
+                CONFIG, ecs_client, TaskArn)
+            functions.waitForTaskRunning(CONFIG, ecs_client, TaskArn)
+            Target = functions.register_target(
+                CONFIG, elbv2_client, TargetGroupArn, FargatePrivateIP)
+            functions.waitTargetHealthy(
+                CONFIG, elbv2_client, TargetGroupArn, FargatePrivateIP)
             functions.modifyTargetGroup(elbv2_client, TargetGroupArn)
-            functions.waitForTaskResponding(CONFIG, ID, 100)
+            functions.waitForTaskResponding(CONFIG, ID)
 
-            return config_functions.make_lambda_return(CONFIG, 200, '200 OK', {'ID': ID})
+            return config.make_lambda_return(CONFIG, 200, '200 OK', {'ID': ID})
 
     except Exception as e:
         print(f'{str(e)=}')
-        return config_functions.make_lambda_return(CONFIG, 500, '500 NOT OK', {'error_message': str(e)})
+        return config.make_lambda_return(CONFIG, 500, '500 NOT OK', {'error_message': str(e)})

@@ -1,6 +1,5 @@
 import json
 import uuid
-from ..lambda_function import config_functions
 from ..lambda_function import config
 
 
@@ -8,14 +7,21 @@ def test_load_config():
     ORIGIN_GEODE_SOLUTIONS = 'https://geode-solutions.com'
     PATH_TOOLS_CREATE_BACKEND = '/tools/createbackend'
     ID = str(uuid.uuid4()).replace('-', '')
-    CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS, PATH_TOOLS_CREATE_BACKEND, ID)
+    CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS,
+                           PATH_TOOLS_CREATE_BACKEND, ID)
 
+    assert type(CONFIG.API_URL) is str
     assert type(CONFIG.ASSIGN_PUBLIC_IP) is str
     assert type(CONFIG.CLUSTER_NAME) is str
     assert type(CONFIG.ENVIRONMENT_VARIABLES) is dict
     assert type(CONFIG.HEALTHCHECK_PORT) is int
     assert type(CONFIG.HEALTHCHECK_ROUTE) is str
     assert type(CONFIG.LISTENER_ARN) is str
+    assert type(CONFIG.NUMBER_OF_TRIES_TARGET_HEALTHY) is int
+    assert type(CONFIG.NUMBER_OF_TRIES_TASK_ATTACHED) is int
+    assert type(CONFIG.NUMBER_OF_TRIES_TASK_RESPONDING) is int
+    assert type(CONFIG.NUMBER_OF_TRIES_TASK_RUNNING) is int
+    assert type(CONFIG.PING_ROUTE) is str
     assert type(CONFIG.ORIGINS) is str
     assert type(CONFIG.SECONDS_BETWEEN_TRIES) is float
     assert type(CONFIG.SECURITY_GROUP) is str
@@ -31,9 +37,10 @@ def test_make_lambda_return():
     ORIGIN_GEODE_SOLUTIONS = 'https://geode-solutions.com'
     PATH_TOOLS_CREATE_BACKEND = '/tools/createbackend'
     ID = str(uuid.uuid4()).replace('-', '')
-    CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS, PATH_TOOLS_CREATE_BACKEND, ID)
+    CONFIG = config.Config(ORIGIN_GEODE_SOLUTIONS,
+                           PATH_TOOLS_CREATE_BACKEND, ID)
 
-    lambda_return = config_functions.make_lambda_return(CONFIG,
+    lambda_return = config.make_lambda_return(CONFIG,
                                                         STATUS_CODE_200, STATUS_DESCRIPTION_200)
     assert type(lambda_return) is dict
     assert lambda_return == {
@@ -48,7 +55,7 @@ def test_make_lambda_return():
     }
 
     BODY = dict({'ID': 123456})
-    lambda_return = config_functions.make_lambda_return(CONFIG,
+    lambda_return = config.make_lambda_return(CONFIG,
                                                         STATUS_CODE_200, STATUS_DESCRIPTION_200, BODY)
     assert type(lambda_return) is dict
     assert lambda_return == lambda_return == {
@@ -67,7 +74,7 @@ def test_make_lambda_return():
     STATUS_DESCRIPTION_403 = '403 Forbidden'
     ORIGIN_EMPTY = ''
     BODY = {'error_message': 'Domain not allowed!'}
-    lambda_return = config_functions.make_lambda_return(
+    lambda_return = config.make_lambda_return(
         CONFIG, STATUS_CODE_403, STATUS_DESCRIPTION_403, BODY)
     assert type(lambda_return) is dict
     assert lambda_return == lambda_return == {
