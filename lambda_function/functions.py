@@ -226,12 +226,11 @@ def waitForTaskRunning(CONFIG, ecs_client: botocore.client,
 def waitForTaskResponding(CONFIG,
                           ID: str):
     print('Wait task responding')
+    API_URL = getattr(CONFIG, 'API_URL')
+    PING_ROUTE = getattr(CONFIG, 'PING_ROUTE')
     for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_RESPONDING')):
         print(f'{tries=}')
         https = urllib3.PoolManager()
-        API_URL = getattr(CONFIG, 'API_URL')
-        PING_ROUTE = getattr(CONFIG, 'PING_ROUTE')
-        print(f'{API_URL}{PING_ROUTE}')
         r = https.request('POST', f'{API_URL}{PING_ROUTE}')
         if r.status != 200:
             print('Task didn''t respond')
