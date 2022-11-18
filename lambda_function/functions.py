@@ -228,6 +228,7 @@ def waitForTaskResponding(CONFIG,
     print('Wait task responding')
     API_URL = getattr(CONFIG, 'API_URL')
     PING_ROUTE = getattr(CONFIG, 'PING_ROUTE')
+    print(f'{API_URL=}{PING_ROUTE=}')
     for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_RESPONDING')):
         print(f'{tries=}')
         https = urllib3.PoolManager()
