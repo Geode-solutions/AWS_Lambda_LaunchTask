@@ -18,8 +18,7 @@ class Config:
                             }, 'HEALTHCHECK_PORT': 5000, 'HEALTHCHECK_ROUTE': f'/{ID}/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/ApiGeodeSolutions/4a4814e5912d42aa/70716e78eabafa1f', 'NUMBER_OF_TRIES_TARGET_HEALTHY': 100, 'NUMBER_OF_TRIES_TASK_ATTACHED': 50, 'NUMBER_OF_TRIES_TASK_RESPONDING': 100, 'NUMBER_OF_TRIES_TASK_RUNNING': 100, 'ORIGINS': 'https://geode-solutions.com',
                             'PING_ROUTE': f'/{ID}/ping',
                             'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-0ef1a0691e5f59c23', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_Tools_Prod', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
-                        }
-                    , 'DEV':
+                        }, 'DEV':
                         {
                             'API_URL': 'https://api.geode-solutions.com',
                             'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_Tools_Dev', 'ENVIRONMENT_VARIABLES': {
@@ -75,14 +74,6 @@ class Config:
         self.HEALTHCHECK_PORT = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['HEALTHCHECK_PORT']
         self.HEALTHCHECK_ROUTE = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['HEALTHCHECK_ROUTE']
         self.LISTENER_ARN = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['LISTENER_ARN']
-        self.NUMBER_OF_TRIES_TARGET_HEALTHY = CONFIG_DICT[
-            CONFIG_TYPE][CONFIG_ENV]['NUMBER_OF_TRIES_TARGET_HEALTHY']
-        self.NUMBER_OF_TRIES_TASK_ATTACHED = CONFIG_DICT[
-            CONFIG_TYPE][CONFIG_ENV]['NUMBER_OF_TRIES_TASK_ATTACHED']
-        self.NUMBER_OF_TRIES_TASK_RESPONDING = CONFIG_DICT[
-            CONFIG_TYPE][CONFIG_ENV]['NUMBER_OF_TRIES_TASK_RESPONDING']
-        self.NUMBER_OF_TRIES_TASK_RUNNING = CONFIG_DICT[
-            CONFIG_TYPE][CONFIG_ENV]['NUMBER_OF_TRIES_TASK_RUNNING']
         self.PING_ROUTE = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['PING_ROUTE']
         self.ORIGINS = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['ORIGINS']
         self.SECONDS_BETWEEN_TRIES = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]['SECONDS_BETWEEN_TRIES']
