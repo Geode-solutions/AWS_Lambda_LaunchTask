@@ -159,6 +159,7 @@ def waitTaskAttached(CONFIG,
         if taskStatus == 'ATTACHED':
             break
         elif taskStatus == 'DETACHING' or taskStatus == 'DETACHED' or taskStatus == 'DELETED' or taskStatus == 'FAILED':
+            print(f'{taskStatus=}')
             raise Exception('Task not attached')
         else:
             time.sleep(CONFIG.SECONDS_BETWEEN_TRIES)
@@ -212,10 +213,10 @@ def waitForTaskRunning(CONFIG, ecs_client: botocore.client,
         taskDescription = ecs_client.describe_tasks(
             cluster=getattr(CONFIG, 'CLUSTER_NAME'), tasks=[TaskArn])
         taskStatus = taskDescription['tasks'][0]['lastStatus']
-        print(f'{taskStatus=}')
         if taskStatus == 'RUNNING':
             break
-        elif taskStatus == 'DEACTIVATING' or taskStatus == 'STOPPING' or      taskStatus == 'DEPROVISIONING' or taskStatus == 'STOPPED':
+        elif taskStatus == 'DEACTIVATING' or taskStatus == 'STOPPING' or taskStatus == 'DEPROVISIONING' or taskStatus == 'STOPPED':
+            print(f'{taskStatus=}')
             raise Exception('Task not running')
         else:
             time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
