@@ -157,15 +157,14 @@ def waitTaskAttached(CONFIG,
         taskStatus = taskDescription['tasks'][0]['attachments'][0]['status']
 
         if taskStatus == 'ATTACHED':
-            print('Task attached !')
-            FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
-            return FargatePrivateIP
-        elif taskStatus == 'NOT ATTACHED':
+            break
+        elif taskStatus == 'DETACHING' or taskStatus == 'DETACHED' or taskStatus == 'DELETED' or taskStatus == 'FAILED':
             raise Exception('Task not attached')
         else:
-            print(f'{taskStatus=}')
             time.sleep(CONFIG.SECONDS_BETWEEN_TRIES)
-
+    print('Task attached !')
+    FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
+    return FargatePrivateIP
 
 def waitTargetHealthy(CONFIG,
                       elbv2_client: botocore.client,
