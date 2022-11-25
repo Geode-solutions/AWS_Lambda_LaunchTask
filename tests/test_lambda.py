@@ -17,10 +17,6 @@ def test_load_config():
     assert type(CONFIG.HEALTHCHECK_PORT) is int
     assert type(CONFIG.HEALTHCHECK_ROUTE) is str
     assert type(CONFIG.LISTENER_ARN) is str
-    assert type(CONFIG.NUMBER_OF_TRIES_TARGET_HEALTHY) is int
-    assert type(CONFIG.NUMBER_OF_TRIES_TASK_ATTACHED) is int
-    assert type(CONFIG.NUMBER_OF_TRIES_TASK_RESPONDING) is int
-    assert type(CONFIG.NUMBER_OF_TRIES_TASK_RUNNING) is int
     assert type(CONFIG.PING_ROUTE) is str
     assert type(CONFIG.ORIGINS) is str
     assert type(CONFIG.SECONDS_BETWEEN_TRIES) is float
@@ -41,7 +37,7 @@ def test_make_lambda_return():
                            PATH_TOOLS_CREATE_BACKEND, ID)
 
     lambda_return = config.make_lambda_return(CONFIG,
-                                                        STATUS_CODE_200, STATUS_DESCRIPTION_200)
+                                              STATUS_CODE_200, STATUS_DESCRIPTION_200)
     assert type(lambda_return) is dict
     assert lambda_return == {
         'statusCode': STATUS_CODE_200,
@@ -56,7 +52,7 @@ def test_make_lambda_return():
 
     BODY = dict({'ID': 123456})
     lambda_return = config.make_lambda_return(CONFIG,
-                                                        STATUS_CODE_200, STATUS_DESCRIPTION_200, BODY)
+                                              STATUS_CODE_200, STATUS_DESCRIPTION_200, BODY)
     assert type(lambda_return) is dict
     assert lambda_return == lambda_return == {
         'statusCode': STATUS_CODE_200,
