@@ -147,31 +147,33 @@ def waitTaskAttached(CONFIG,
                      ecs_client: botocore.client,
                      taskArn: str):
     print('Wait task attached')
-    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_ATTACHED')):
-        print(f'{tries=}')
+    taskStatus = ''
+
+    while taskStatus != 'ATTACHED':
         taskDescription = ecs_client.describe_tasks(
             cluster=CONFIG.CLUSTER_NAME,
             tasks=[taskArn]
         )
-
         taskStatus = taskDescription['tasks'][0]['attachments'][0]['status']
 
         if taskStatus == 'ATTACHED':
-            print('Task attached !')
-            FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
-            return FargatePrivateIP
+            break
+        elif taskStatus == 'DETACHING' or taskStatus == 'DETACHED' or taskStatus == 'DELETED' or taskStatus == 'FAILED':
+            print(f'{taskStatus=}')
+            raise Exception('Task not attached')
         else:
             time.sleep(CONFIG.SECONDS_BETWEEN_TRIES)
-    raise Exception('Task not attached')
-
+    print('Task attached !')
+    FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
+    return FargatePrivateIP
 
 def waitTargetHealthy(CONFIG,
                       elbv2_client: botocore.client,
                       TargetGroupArn: str,
                       FargatePrivateIP: str):
     print('Wait target healthy')
-    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TARGET_HEALTHY')):
-        print(f'{tries=}')
+    targetHealthStatus = ''
+    while targetHealthStatus != 'healthy':
         targetHealthDescription = elbv2_client.describe_target_health(
             TargetGroupArn=TargetGroupArn,
             Targets=[
@@ -182,17 +184,14 @@ def waitTargetHealthy(CONFIG,
             ]
         )
         targetHealthStatus = targetHealthDescription['TargetHealthDescriptions'][0]['TargetHealth']['State']
-
-        print(f'{targetHealthStatus=}')
         if targetHealthStatus == 'healthy':
-            print('Target healthy !')
-            return
+            break
         if targetHealthStatus == 'unhealthy':
-            print('Target unhealthy !')
             raise Exception('Target unhealthy !')
         else:
             time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
-    raise Exception('Target not healthy')
+    print('Target healthy !')
+    return
 
 
 def modifyTargetGroup(elbv2_client: botocore.client,
@@ -209,36 +208,40 @@ def modifyTargetGroup(elbv2_client: botocore.client,
 def waitForTaskRunning(CONFIG, ecs_client: botocore.client,
                        TaskArn: str):
     print('Wait task running')
-    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_RUNNING')):
-        print(f'{tries=}')
+    taskStatus = ''
+    while taskStatus != 'RUNNING':
         taskDescription = ecs_client.describe_tasks(
             cluster=getattr(CONFIG, 'CLUSTER_NAME'), tasks=[TaskArn])
         taskStatus = taskDescription['tasks'][0]['lastStatus']
-
         if taskStatus == 'RUNNING':
-            print('Task running !')
-            return
+            break
+        elif taskStatus == 'DEACTIVATING' or taskStatus == 'STOPPING' or taskStatus == 'DEPROVISIONING' or taskStatus == 'STOPPED':
+            print(f'{taskStatus=}')
+            raise Exception('Task not running')
         else:
             time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
-    raise Exception('Task not running')
+    print('Task running !')
+    return
 
 
 def waitForTaskResponding(CONFIG,
                           ID: str):
     print('Wait task responding')
-    for tries in range(getattr(CONFIG, 'NUMBER_OF_TRIES_TASK_RESPONDING')):
-        print(f'{tries=}')
-        https = urllib3.PoolManager()
-        API_URL = getattr(CONFIG, 'API_URL')
-        PING_ROUTE = getattr(CONFIG, 'PING_ROUTE')
-        print(f'{API_URL}{PING_ROUTE}')
-        r = https.request('POST', f'{API_URL}{PING_ROUTE}')
-        if r.status != 200:
-            print('Task didn''t respond')
-            time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
-        else:
-            print('response : ', r.data)
-            print('Task responded !')
-            return
+    API_URL = getattr(CONFIG, 'API_URL')
+    PING_ROUTE = getattr(CONFIG, 'PING_ROUTE')
+    print(f'{API_URL=}{PING_ROUTE=}')
+    STATUS = 0
 
-    raise Exception('Task not responding')
+    while STATUS != 200:
+        https = urllib3.PoolManager()
+        r = https.request('POST', f'{API_URL}{PING_ROUTE}')
+        STATUS = r.status
+        if STATUS == 200:
+            break
+        elif STATUS == 404:
+            raise Exception(f'{API_URL}{PING_ROUTE} doesn''t exist')
+        elif r.status != 200:
+            time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
+    print(f'{r.data=}')
+    print('Task responded !')
+    return
