@@ -33,7 +33,7 @@ class Config:
                         {
                             'API_URL': 'https://api2.geode-solutions.com',
                             'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Prod', 'ENVIRONMENT_VARIABLES': {
-                                'name': 'Geode', 'environment': [{
+                                'name': 'geode', 'environment': [{
                                     'name': 'ID', 'value': ID}]
                             }, 'HEALTHCHECK_PORT': 443, 'HEALTHCHECK_ROUTE': f'/{ID}/geode/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4',
                             'PING_ROUTE': f'/{ID}/geode/ping',
@@ -42,7 +42,7 @@ class Config:
                         {
                             'API_URL': 'https://api2.geode-solutions.com',
                             'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Dev', 'ENVIRONMENT_VARIABLES': {
-                                'name': 'Geode', 'environment': [{
+                                'name': 'geode', 'environment': [{
                                     'name': 'ID', 'value': ID}]
                             }, 'HEALTHCHECK_PORT': 443, 'HEALTHCHECK_ROUTE': f'/{ID}/geode/healthcheck', 'LISTENER_ARN': 'arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4',
                             'PING_ROUTE': f'/{ID}/geode/ping',
