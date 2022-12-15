@@ -34,23 +34,23 @@ def lambda_handler(event, context):
             elbv2_client = boto3.client('elbv2')
             ecs_client = boto3.client('ecs')
 
-            TaskArn = functions.create_fargate_task(CONFIG, ecs_client, ID)
-            TargetGroupArn = functions.create_target_group(
+            task_arn = functions.create_fargate_task(CONFIG, ecs_client, ID)
+            target_group_arn = functions.create_target_group(
                 CONFIG, elbv2_client, ID)
-            functions.addTag(ecs_client, TaskArn,
-                             'TargetGroupArn', TargetGroupArn)
-            RuleArn = functions.create_listener_rule(
-                CONFIG, elbv2_client, ID, TargetGroupArn, 0)
-            functions.addTag(ecs_client, TaskArn, 'RuleArn', RuleArn)
-            FargatePrivateIP = functions.waitTaskAttached(
-                CONFIG, ecs_client, TaskArn)
-            functions.waitForTaskRunning(CONFIG, ecs_client, TaskArn)
-            functions.set_interval(ping_task(CONFIG, FargatePrivateIP), 10)
+            functions.addTag(ecs_client, task_arn,
+                             'target_group_arn', target_group_arn)
+            rule_arn = functions.create_listener_rule(
+                CONFIG, elbv2_client, ID, target_group_arn, 0)
+            functions.addTag(ecs_client, task_arn, 'rule_arn', rule_arn)
+            fargate_private_ip = functions.waitTaskAttached(
+                CONFIG, ecs_client, task_arn)
+            functions.waitForTaskRunning(CONFIG, ecs_client, task_arn)
+            functions.set_interval(functions.ping_task(CONFIG, fargate_private_ip), 10)
             Target = functions.register_target(
-                CONFIG, elbv2_client, TargetGroupArn, FargatePrivateIP)
+                CONFIG, elbv2_client, target_group_arn, fargate_private_ip)
             functions.waitTargetHealthy(
-                CONFIG, elbv2_client, TargetGroupArn, FargatePrivateIP)
-            functions.modifyTargetGroup(elbv2_client, TargetGroupArn)
+                CONFIG, elbv2_client, target_group_arn, fargate_private_ip)
+            functions.modifyTargetGroup(elbv2_client, target_group_arn)
             functions.waitForTaskResponding(CONFIG, ID)
 
             return config.make_lambda_return(CONFIG, 200, '200 OK', {'ID': ID})
