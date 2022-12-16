@@ -32,9 +32,12 @@ def lambda_handler(event, context):
         else:
             print(f'{ID=}')
             elbv2_client = boto3.client('elbv2')
+            print(f'{ID=}')
             ecs_client = boto3.client('ecs')
+            print(f'{ID=}')
 
             task_arn = functions.create_fargate_task(CONFIG, ecs_client, ID)
+            print(f'{ID=}')
             target_group_arn = functions.create_target_group(
                 CONFIG, elbv2_client, ID)
             functions.add_tag(ecs_client, task_arn,
