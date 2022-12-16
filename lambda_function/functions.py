@@ -167,12 +167,8 @@ def wait_task_attached(CONFIG,
             time.sleep(CONFIG.SECONDS_BETWEEN_TRIES)
     print('Task attached !')
     print(f'{taskDescription=}')
-    eni_id = taskDescription['tasks'][0]['attachments'][0]['details'][1]['value']
-    eni = boto3.resource('ec2').NetworkInterface(eni_id)
-    FargatePublicIP = eni.association_attribute['PublicIp']
-    print(eni.association_attribute['PublicIp'])
     FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
-    return FargatePrivateIP, FargatePublicIP
+    return FargatePrivateIP
 
 
 def wait_target_healthy(CONFIG,
