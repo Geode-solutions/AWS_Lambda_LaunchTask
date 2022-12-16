@@ -48,8 +48,6 @@ def lambda_handler(event, context):
             fargate_private_ip, fargate_public_ip = functions.wait_task_attached(
                 CONFIG, ecs_client, task_arn)
             functions.wait_for_task_running(CONFIG, ecs_client, task_arn)
-            # functions.set_interval(functions.ping_task(
-            #     CONFIG, fargate_public_ip), 10)
             Target = functions.register_target(
                 CONFIG, elbv2_client, target_group_arn, fargate_private_ip)
             functions.wait_target_healthy(

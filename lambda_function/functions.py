@@ -253,37 +253,3 @@ def wait_for_task_responding(CONFIG,
     print(f'{r.data=}')
     print('Task responded !')
     return
-
-
-def set_interval(func, sec):
-    def func_wrapper():
-        set_interval(func, sec)
-        func()
-    t = threading.Timer(sec, func_wrapper)
-    t.daemon = True
-    t.start()
-    return t
-
-
-def ping_task(CONFIG, fargate_private_ip):
-    PING_ROUTE = getattr(CONFIG, 'PING_ROUTE')
-    HEALTHCHECK_PORT = getattr(CONFIG, 'HEALTHCHECK_PORT')
-    URL = f'https://{fargate_private_ip}:{HEALTHCHECK_PORT}{PING_ROUTE}'
-    print(f'{URL=}')
-    STATUS = 0
-
-    while STATUS != 200:
-        https = urllib3.PoolManager()
-        r = https.request('POST', URL)
-        STATUS = r.status
-        print(f'{r=}')
-        if STATUS == 200:
-            break
-        elif STATUS == 404:
-            raise Exception(f'{URL} doesn''t exist')
-        elif STATUS != 200:
-            print(f'{STATUS=}')
-            time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
-    print(f'{r.data=}')
-    print('Task responded !')
-    return
