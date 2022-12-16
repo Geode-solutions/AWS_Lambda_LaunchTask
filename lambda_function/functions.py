@@ -6,6 +6,7 @@ import botocore
 import urllib3
 import uuid
 import time
+import threading
 
 
 def create_fargate_task(CONFIG, ecs_client: botocore.client, ID: str):
@@ -28,6 +29,7 @@ def create_fargate_task(CONFIG, ecs_client: botocore.client, ID: str):
         overrides={'containerOverrides': [
             getattr(CONFIG, 'ENVIRONMENT_VARIABLES')]},
     )
+    print(f'{fargate=}')
 
     failures = fargate['failures']
     if failures:
@@ -128,10 +130,10 @@ def register_target(CONFIG,
     return target
 
 
-def addTag(ecs_client: botocore.client,
-           taskArn: str,
-           key: str,
-           value: str):
+def add_tag(ecs_client: botocore.client,
+            taskArn: str,
+            key: str,
+            value: str):
     response = ecs_client.tag_resource(
         resourceArn=taskArn,
         tags=[
@@ -143,9 +145,9 @@ def addTag(ecs_client: botocore.client,
     )
 
 
-def waitTaskAttached(CONFIG,
-                     ecs_client: botocore.client,
-                     taskArn: str):
+def wait_task_attached(CONFIG,
+                       ecs_client: botocore.client,
+                       taskArn: str):
     print('Wait task attached')
     taskStatus = ''
 
@@ -164,13 +166,15 @@ def waitTaskAttached(CONFIG,
         else:
             time.sleep(CONFIG.SECONDS_BETWEEN_TRIES)
     print('Task attached !')
+    print(f'{taskDescription=}')
     FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
     return FargatePrivateIP
 
-def waitTargetHealthy(CONFIG,
-                      elbv2_client: botocore.client,
-                      TargetGroupArn: str,
-                      FargatePrivateIP: str):
+
+def wait_target_healthy(CONFIG,
+                        elbv2_client: botocore.client,
+                        TargetGroupArn: str,
+                        FargatePrivateIP: str):
     print('Wait target healthy')
     targetHealthStatus = ''
     while targetHealthStatus != 'healthy':
@@ -194,8 +198,8 @@ def waitTargetHealthy(CONFIG,
     return
 
 
-def modifyTargetGroup(elbv2_client: botocore.client,
-                      TargetGroupArn: str):
+def modify_target_group(elbv2_client: botocore.client,
+                        TargetGroupArn: str):
     response = elbv2_client.modify_target_group(
         TargetGroupArn=TargetGroupArn,
         HealthCheckIntervalSeconds=5,
@@ -205,8 +209,8 @@ def modifyTargetGroup(elbv2_client: botocore.client,
     )
 
 
-def waitForTaskRunning(CONFIG, ecs_client: botocore.client,
-                       TaskArn: str):
+def wait_for_task_running(CONFIG, ecs_client: botocore.client,
+                          TaskArn: str):
     print('Wait task running')
     taskStatus = ''
     while taskStatus != 'RUNNING':
@@ -224,8 +228,8 @@ def waitForTaskRunning(CONFIG, ecs_client: botocore.client,
     return
 
 
-def waitForTaskResponding(CONFIG,
-                          ID: str):
+def wait_for_task_responding(CONFIG,
+                             ID: str):
     print('Wait task responding')
     API_URL = getattr(CONFIG, 'API_URL')
     PING_ROUTE = getattr(CONFIG, 'PING_ROUTE')
