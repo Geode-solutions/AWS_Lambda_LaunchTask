@@ -31,7 +31,7 @@ class Config:
                 {
                     'PROD':
                         {
-                            'API_URL': 'https://api.share-twin.com',
+                            'API_URL': 'https://api2.geode-solutions.com',
                             'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Prod', 'ENVIRONMENT_VARIABLES': {
                                 'name': 'geode', 'environment': [{
                                     'name': 'ID', 'value': ID}]
@@ -40,7 +40,7 @@ class Config:
                             'ORIGINS': 'https://share-twin.com', 'SECONDS_BETWEEN_TRIES': 0.25, 'SECURITY_GROUP': 'sg-01bcf5f64e3427fd3', 'SUBNET_ID': 'subnet-0882d674b17515f6a', 'TASK_DEF_NAME': 'TD_ShareTwin_Prod', 'VPC_ID': 'vpc-0e58c4d6976fb2aac'
                         }, 'DEV':
                         {
-                            'API_URL': 'https://api.share-twin.com',
+                            'API_URL': 'https://api2.geode-solutions.com',
                             'ASSIGN_PUBLIC_IP': 'ENABLED', 'CLUSTER_NAME': 'C_ShareTwin_Dev', 'ENVIRONMENT_VARIABLES': {
                                 'name': 'geode', 'environment': [{
                                     'name': 'ID', 'value': ID}]
