@@ -160,6 +160,7 @@ def wait_task_attached(CONFIG,
             cluster=CONFIG.CLUSTER_NAME,
             tasks=[taskArn]
         )
+        print(f'{taskDescription=}')
         taskStatus = taskDescription['tasks'][0]['attachments'][0]['status']
 
         if taskStatus == 'ATTACHED':
@@ -172,6 +173,7 @@ def wait_task_attached(CONFIG,
     print('Task attached !')
     FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
     return FargatePrivateIP
+
 
 
 def wait_target_healthy(CONFIG,
