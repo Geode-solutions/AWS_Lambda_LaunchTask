@@ -11,39 +11,34 @@ import threading
 
 def create_fargate_task(CONFIG, ecs_client: botocore.client, ID: str):
 
-    try:
-        fargate = ecs_client.run_task(
-            cluster=getattr(CONFIG, 'CLUSTER_NAME'),
-            count=1,
-            launchType='FARGATE',
-            taskDefinition=getattr(CONFIG, 'TASK_DEF_NAME'),
-            platformVersion='LATEST',
-            networkConfiguration={
-                'awsvpcConfiguration': {
-                    'subnets': [
-                        getattr(CONFIG, 'SUBNET_ID'),
-                    ],
-                    'securityGroups': [getattr(CONFIG, 'SECURITY_GROUP')],
-                    'assignPublicIp': getattr(CONFIG, 'ASSIGN_PUBLIC_IP')
-                }
-            },
-            overrides={'containerOverrides': [
-                getattr(CONFIG, 'ENVIRONMENT_VARIABLES')]},
-        )
-        print(f'{fargate=}')
+    fargate = ecs_client.run_task(
+        cluster=getattr(CONFIG, 'CLUSTER_NAME'),
+        count=1,
+        launchType='FARGATE',
+        taskDefinition=getattr(CONFIG, 'TASK_DEF_NAME'),
+        platformVersion='LATEST',
+        networkConfiguration={
+            'awsvpcConfiguration': {
+                'subnets': [
+                    getattr(CONFIG, 'SUBNET_ID'),
+                ],
+                'securityGroups': [getattr(CONFIG, 'SECURITY_GROUP')],
+                'assignPublicIp': getattr(CONFIG, 'ASSIGN_PUBLIC_IP')
+            }
+        },
+        overrides={'containerOverrides': [
+            getattr(CONFIG, 'ENVIRONMENT_VARIABLES')]},
+    )
+    print(f'{fargate=}')
 
-        failures = fargate['failures']
-        if failures:
-            print(f'{failures=}')
-            taskArn = create_fargate_task(ecs_client, ID)
-        else:
-            taskArn = fargate['tasks'][0]['taskArn']
+    failures = fargate['failures']
+    if failures:
+        print(f'{failures=}')
+        taskArn = create_fargate_task(ecs_client, ID)
+    else:
+        taskArn = fargate['tasks'][0]['taskArn']
 
-        return taskArn
-    except Exception as e:
-        print(f'{str(e)=}')
-        return config.make_lambda_return(CONFIG, 500, '500 NOT OK', {'error_message': str(e)})
-
+    return taskArn
 
 def create_target_group(CONFIG, elbv2_client: botocore.client,
                         ID: str):
