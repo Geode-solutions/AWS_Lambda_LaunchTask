@@ -270,11 +270,12 @@ def ping_task(CONFIG, fargate_private_ip):
         https = urllib3.PoolManager()
         r = https.request('POST', URL)
         STATUS = r.status
+        print(f'{r=}')
         if STATUS == 200:
             break
         elif STATUS == 404:
             raise Exception(f'{URL} doesn''t exist')
-        elif r.status != 200:
+        elif STATUS != 200:
             print(f'{STATUS=}')
             time.sleep(getattr(CONFIG, 'SECONDS_BETWEEN_TRIES'))
     print(f'{r.data=}')
