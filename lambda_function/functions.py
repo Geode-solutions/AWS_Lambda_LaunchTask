@@ -30,6 +30,7 @@ def create_fargate_task(CONFIG, ecs_client: botocore.client, ID: str):
             overrides={'containerOverrides': [
                 getattr(CONFIG, 'ENVIRONMENT_VARIABLES')]},
         )
+        print(f'{fargate=}')
 
         failures = fargate['failures']
         if failures:
