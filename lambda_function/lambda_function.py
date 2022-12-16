@@ -32,12 +32,9 @@ def lambda_handler(event, context):
         else:
             print(f'{ID=}')
             elbv2_client = boto3.client('elbv2')
-            print(f'{ID=}')
             ecs_client = boto3.client('ecs')
-            print(f'{ID=}')
 
             task_arn = functions.create_fargate_task(CONFIG, ecs_client, ID)
-            print(f'{ID=}')
             target_group_arn = functions.create_target_group(
                 CONFIG, elbv2_client, ID)
             functions.add_tag(ecs_client, task_arn,
@@ -45,7 +42,7 @@ def lambda_handler(event, context):
             rule_arn = functions.create_listener_rule(
                 CONFIG, elbv2_client, ID, target_group_arn, 0)
             functions.add_tag(ecs_client, task_arn, 'rule_arn', rule_arn)
-            fargate_private_ip, fargate_public_ip = functions.wait_task_attached(
+            fargate_private_ip = functions.wait_task_attached(
                 CONFIG, ecs_client, task_arn)
             functions.wait_for_task_running(CONFIG, ecs_client, task_arn)
             Target = functions.register_target(
