@@ -11,7 +11,6 @@ import threading
 
 def create_fargate_task(CONFIG, ecs_client: botocore.client, ID: str):
 
-
     try:
         fargate = ecs_client.run_task(
             cluster=getattr(CONFIG, 'CLUSTER_NAME'),
@@ -160,7 +159,6 @@ def wait_task_attached(CONFIG,
             cluster=CONFIG.CLUSTER_NAME,
             tasks=[taskArn]
         )
-        print(f'{taskDescription=}')
         taskStatus = taskDescription['tasks'][0]['attachments'][0]['status']
 
         if taskStatus == 'ATTACHED':
@@ -171,9 +169,9 @@ def wait_task_attached(CONFIG,
         else:
             time.sleep(CONFIG.SECONDS_BETWEEN_TRIES)
     print('Task attached !')
+    print(f'{taskDescription=}')
     FargatePrivateIP = taskDescription['tasks'][0]['attachments'][0]['details'][4]['value']
     return FargatePrivateIP
-
 
 
 def wait_target_healthy(CONFIG,
