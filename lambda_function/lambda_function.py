@@ -23,7 +23,6 @@ def lambda_handler(event, context):
     REQUEST_PATH = event['path']
     HTTP_METHOD = event['httpMethod']
     ID = str(uuid.uuid4()).replace('-', '')
-    print(f'{ID=}')
 
     CONFIG = config.Config(REQUEST_ORIGIN, REQUEST_PATH, ID)
 
@@ -31,6 +30,7 @@ def lambda_handler(event, context):
         if HTTP_METHOD == 'OPTIONS':
             return config.make_lambda_return(CONFIG, 200, '200 OK')
         else:
+            print(f'{ID=}')
             elbv2_client = boto3.client('elbv2')
             ecs_client = boto3.client('ecs')
 
