@@ -46,7 +46,8 @@ def test_make_lambda_return():
         'headers': {
             'Access-Control-Allow-Headers': 'Content-Type',
             'Access-Control-Allow-Origin': CONFIG.ORIGINS,
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            'Content-Type': 'application/json'
         }
     }
 
@@ -61,7 +62,8 @@ def test_make_lambda_return():
         'headers': {
             'Access-Control-Allow-Headers': 'Content-Type',
             'Access-Control-Allow-Origin': CONFIG.ORIGINS,
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            'Content-Type': 'application/json'
         },
         'body': json.dumps(BODY)
     }
@@ -80,7 +82,8 @@ def test_make_lambda_return():
         'headers': {
             'Access-Control-Allow-Headers': 'Content-Type',
             'Access-Control-Allow-Origin': CONFIG.ORIGINS,
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+            'Content-Type': 'application/json'
         },
         'body': json.dumps(BODY)
     }
