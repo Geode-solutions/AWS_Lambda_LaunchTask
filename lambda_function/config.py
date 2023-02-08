@@ -87,9 +87,14 @@ class Config:
 def make_lambda_return(CONFIG, STATUS_CODE: int, STATUS_DESCRIPTION: str, BODY: dict = None):
 
     lamdba_return = dict([
-        ('statusCode', STATUS_CODE), ('statusDescription', STATUS_DESCRIPTION), ('isBase64Encoded', False), ('headers', dict([
-            ('Access-Control-Allow-Headers', 'Content-Type'), ('Access-Control-Allow-Origin',
-                                                               getattr(CONFIG, 'ORIGINS')), ('Access-Control-Allow-Methods', 'OPTIONS,POST,GET')
+        ('statusCode', STATUS_CODE),
+        ('statusDescription', STATUS_DESCRIPTION),
+        ('isBase64Encoded', False),
+        ('headers', dict([
+            ('Access-Control-Allow-Headers', 'Content-Type'),
+            ('Access-Control-Allow-Origin', getattr(CONFIG, 'ORIGINS')),
+            ('Access-Control-Allow-Methods', 'OPTIONS,POST,GET'),
+            ('Content-Type', 'application/json')
         ])
         )
     ])
