@@ -42,6 +42,7 @@ def lambda_handler(event, context):
             rule_arn = functions.create_listener_rule(
                 CONFIG, elbv2_client, ID, target_group_arn, 0)
             functions.add_tag(ecs_client, task_arn, 'rule_arn', rule_arn)
+            functions.add_tag(ecs_client, task_arn, 'cluster_name', CONFIG.CLUSTER_NAME)
             fargate_private_ip = functions.wait_task_attached(
                 CONFIG, ecs_client, task_arn)
             functions.wait_for_task_running(CONFIG, ecs_client, task_arn)
