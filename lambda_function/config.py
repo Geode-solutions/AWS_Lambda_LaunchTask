@@ -117,10 +117,8 @@ class Config:
             elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["DEV"]["ORIGINS"]:
                 CONFIG_ENV = "DEV"
             elif "--geode-solutions.netlify.app" in REQUEST_ORIGIN:
-                print(REQUEST_ORIGIN)
-                task = REQUEST_ORIGIN[8:].split("--geode-solutions.netlify.app")[0]
-                print(task)
                 CONFIG_ENV = "TEST"
+                task = REQUEST_ORIGIN[8:].split("--geode-solutions.netlify.app")[0]
                 CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]["ORIGINS"] = REQUEST_ORIGIN
                 CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]["TASK_DEF_NAME"] = task
         elif "/sharetwin/" in REQUEST_PATH:
