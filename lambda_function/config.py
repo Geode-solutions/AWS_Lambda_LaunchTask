@@ -116,9 +116,9 @@ class Config:
                 CONFIG_ENV = "PROD"
             elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["DEV"]["ORIGINS"]:
                 CONFIG_ENV = "DEV"
-            elif "--geode-solutions.nelify.app" in REQUEST_ORIGIN:
+            elif "--geode-solutions.netlify.app" in REQUEST_ORIGIN:
                 print(REQUEST_ORIGIN)
-                task = REQUEST_ORIGIN[8:].split("--geode-solutions.nelify.app")[0]
+                task = REQUEST_ORIGIN[8:].split("--geode-solutions.netlify.app")[0]
                 print(task)
                 CONFIG_ENV = "TEST"
                 CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]["ORIGINS"] = REQUEST_ORIGIN
