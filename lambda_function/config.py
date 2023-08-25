@@ -13,7 +13,7 @@ class Config:
                     "ASSIGN_PUBLIC_IP": "ENABLED",
                     "CLUSTER_NAME": "C_Tools_Prod",
                     "ENVIRONMENT_VARIABLES": {
-                        "name": "ToolsContainer",
+                        "name": "geode",
                         "environment": [{"name": "ID", "value": ID}],
                     },
                     "HEALTHCHECK_PORT": 443,
@@ -32,7 +32,7 @@ class Config:
                     "ASSIGN_PUBLIC_IP": "ENABLED",
                     "CLUSTER_NAME": "C_Tools_Dev",
                     "ENVIRONMENT_VARIABLES": {
-                        "name": "ToolsContainer",
+                        "name": "geode",
                         "environment": [{"name": "ID", "value": ID}],
                     },
                     "HEALTHCHECK_PORT": 443,
@@ -51,7 +51,7 @@ class Config:
                     "ASSIGN_PUBLIC_IP": "ENABLED",
                     "CLUSTER_NAME": "C_Tools_Test",
                     "ENVIRONMENT_VARIABLES": {
-                        "name": "ToolsContainer",
+                        "name": "geode",
                         "environment": [{"name": "ID", "value": ID}],
                     },
                     "HEALTHCHECK_PORT": 443,
