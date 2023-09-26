@@ -2,7 +2,7 @@ name: Deploy to AWS Lambda
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master, next ]
 
 jobs:
   build:

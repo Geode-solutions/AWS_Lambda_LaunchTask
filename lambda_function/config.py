@@ -7,11 +7,11 @@ class Config:
         print(f"{REQUEST_PATH=}")
 
         CONFIG_DICT = {
-            "TOOLS": {
-                "PROD": {
+            "WEBSITE": {
+                "MASTER": {
                     "API_URL": "https://api.geode-solutions.com",
                     "ASSIGN_PUBLIC_IP": "ENABLED",
-                    "CLUSTER_NAME": "C_Tools_Prod",
+                    "CLUSTER_NAME": "Website-Master",
                     "ENVIRONMENT_VARIABLES": {
                         "name": "geode",
                         "environment": [{"name": "ID", "value": ID}],
@@ -24,13 +24,13 @@ class Config:
                     "SECONDS_BETWEEN_TRIES": 0.25,
                     "SECURITY_GROUP": "sg-0ef1a0691e5f59c23",
                     "SUBNET_ID": "subnet-0882d674b17515f6a",
-                    "TASK_DEF_NAME": "TD_Tools_Prod",
+                    "TASK_DEF_NAME": "Website-Master",
                     "VPC_ID": "vpc-0e58c4d6976fb2aac",
                 },
-                "DEV": {
+                "NEXT": {
                     "API_URL": "https://api.geode-solutions.com",
                     "ASSIGN_PUBLIC_IP": "ENABLED",
-                    "CLUSTER_NAME": "C_Tools_Dev",
+                    "CLUSTER_NAME": "Website-Next",
                     "ENVIRONMENT_VARIABLES": {
                         "name": "geode",
                         "environment": [{"name": "ID", "value": ID}],
@@ -43,13 +43,13 @@ class Config:
                     "SECONDS_BETWEEN_TRIES": 0.25,
                     "SECURITY_GROUP": "sg-0352ea112857ae7b9",
                     "SUBNET_ID": "subnet-0882d674b17515f6a",
-                    "TASK_DEF_NAME": "TD_Tools_Dev",
+                    "TASK_DEF_NAME": "Website-Next",
                     "VPC_ID": "vpc-0e58c4d6976fb2aac",
                 },
                 "TEST": {
                     "API_URL": "https://api.geode-solutions.com",
                     "ASSIGN_PUBLIC_IP": "ENABLED",
-                    "CLUSTER_NAME": "C_Tools_Test",
+                    "CLUSTER_NAME": "Website-Test",
                     "ENVIRONMENT_VARIABLES": {
                         "name": "geode",
                         "environment": [{"name": "ID", "value": ID}],
@@ -67,10 +67,10 @@ class Config:
                 },
             },
             "SHARETWIN": {
-                "PROD": {
+                "MASTER": {
                     "API_URL": "https://api.share-twin.com",
                     "ASSIGN_PUBLIC_IP": "ENABLED",
-                    "CLUSTER_NAME": "C_ShareTwin_Prod",
+                    "CLUSTER_NAME": "ShareTwin-Master",
                     "ENVIRONMENT_VARIABLES": {
                         "name": "geode",
                         "environment": [{"name": "ID", "value": ID}],
@@ -83,13 +83,13 @@ class Config:
                     "SECONDS_BETWEEN_TRIES": 0.25,
                     "SECURITY_GROUP": "sg-01bcf5f64e3427fd3",
                     "SUBNET_ID": "subnet-0882d674b17515f6a",
-                    "TASK_DEF_NAME": "TD_ShareTwin_Prod",
+                    "TASK_DEF_NAME": "ShareTwin-Master",
                     "VPC_ID": "vpc-0e58c4d6976fb2aac",
                 },
-                "DEV": {
+                "NEXT": {
                     "API_URL": "https://api.share-twin.com",
                     "ASSIGN_PUBLIC_IP": "ENABLED",
-                    "CLUSTER_NAME": "C_ShareTwin_Dev",
+                    "CLUSTER_NAME": "ShareTwin-Next",
                     "ENVIRONMENT_VARIABLES": {
                         "name": "geode",
                         "environment": [{"name": "ID", "value": ID}],
@@ -102,20 +102,20 @@ class Config:
                     "SECONDS_BETWEEN_TRIES": 0.25,
                     "SECURITY_GROUP": "sg-07787694c5fdf2429",
                     "SUBNET_ID": "subnet-0882d674b17515f6a",
-                    "TASK_DEF_NAME": "TD_ShareTwin_Dev",
+                    "TASK_DEF_NAME": "ShareTwin-Next",
                     "VPC_ID": "vpc-0e58c4d6976fb2aac",
                 },
             },
         }
 
-        if "/tools/" in REQUEST_PATH:
-            CONFIG_TYPE = "TOOLS"
+        if "/website/" in REQUEST_PATH:
+            CONFIG_TYPE = "WEBSITE"
             if REQUEST_ORIGIN == "":
-                CONFIG_TYPE = "DEV"
-            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["PROD"]["ORIGINS"]:
-                CONFIG_ENV = "PROD"
-            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["DEV"]["ORIGINS"]:
-                CONFIG_ENV = "DEV"
+                CONFIG_TYPE = "NEXT"
+            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["MASTER"]["ORIGINS"]:
+                CONFIG_ENV = "MASTER"
+            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["NEXT"]["ORIGINS"]:
+                CONFIG_ENV = "NEXT"
             elif "--geode-solutions.netlify.app" in REQUEST_ORIGIN:
                 CONFIG_ENV = "TEST"
                 task = REQUEST_ORIGIN[8:].split("--geode-solutions.netlify.app")[0]
@@ -124,11 +124,11 @@ class Config:
         elif "/sharetwin/" in REQUEST_PATH:
             CONFIG_TYPE = "SHARETWIN"
             if REQUEST_ORIGIN == "":
-                CONFIG_TYPE = "DEV"
-            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["PROD"]["ORIGINS"]:
-                CONFIG_ENV = "PROD"
-            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["DEV"]["ORIGINS"]:
-                CONFIG_ENV = "DEV"
+                CONFIG_TYPE = "NEXT"
+            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["MASTER"]["ORIGINS"]:
+                CONFIG_ENV = "MASTER"
+            elif REQUEST_ORIGIN == CONFIG_DICT[CONFIG_TYPE]["NEXT"]["ORIGINS"]:
+                CONFIG_ENV = "NEXT"
 
         self.API_URL = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]["API_URL"]
         self.ASSIGN_PUBLIC_IP = CONFIG_DICT[CONFIG_TYPE][CONFIG_ENV]["ASSIGN_PUBLIC_IP"]
