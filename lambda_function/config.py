@@ -138,7 +138,7 @@ class Config:
                     "HEALTHCHECK_ROUTE": f"/{ID}/geode/healthcheck",
                     "LISTENER_ARN": "arn:aws:elasticloadbalancing:eu-west-3:622060531233:listener/app/Api2GeodeSolutions/fd4af85f9ffc5a54/b559795c939115f4",
                     "PING_ROUTE": f"/{ID}/opengeodeweb_back/ping",
-                    "ORIGINS": "https://vease-next.geode-solutions.com",
+                    "ORIGINS": "https://next.vease.geode-solutions.com",
                     "SECONDS_BETWEEN_TRIES": 0.25,
                     "SECURITY_GROUP": "sg-07787694c5fdf2429",
                     "SUBNET_ID": "subnet-0882d674b17515f6a",
